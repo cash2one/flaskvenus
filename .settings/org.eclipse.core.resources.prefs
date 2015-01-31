@@ -1,0 +1,11 @@
+eclipse.preferences.version=1
+encoding//venus/apis.py=utf-8
+encoding//venus/com/enjoyment/apis.py=utf-8
+encoding//venus/com/enjoyment/db.py=utf-8
+encoding//venus/com/enjoyment/distractionapi.py=utf-8
+encoding//venus/com/enjoyment/distractiontypeapi.py=utf-8
+encoding//venus/com/enjoyment/idmanager.py=utf-8
+encoding//venus/com/enjoyment/locationresolver.py=utf-8
+encoding//venus/com/enjoyment/userapi.py=utf-8
+encoding//venus/com/enjoyment/utils.py=utf-8
+encoding//venus/locationresolver.py=utf-8

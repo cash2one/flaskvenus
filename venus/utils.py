@@ -1,0 +1,38 @@
+# -*- coding:utf-8 -*-
+"""
+    author sarike@timefly.cn
+"""
+import string
+import random
+import hashlib
+from .paginator import Paginator, EmptyPage, InvalidPage
+
+def random_key():
+    return ''.join([random.choice(string.letters) for i in xrange(48)])
+
+def hashPassword(password):
+    """Hash the user password.
+
+    Args:
+        password : the user input password.
+    Returns:
+        the password with md5 hashable
+
+    """
+    not_empty(password)
+    md5 = hashlib.md5()
+    md5.update(password)
+    return md5.hexdigest()
+
+
+
+def paginate_list(content_list, from_index=0, per_page=10):
+    paginator = Paginator(content_list, per_page)
+
+    try:
+        content_list = paginator.page(from_index/per_page)
+    except (EmptyPage, InvalidPage):
+        content_list = paginator.page(paginator.num_pages)
+
+    return {'totalCount': paginator.count, 'startIndex': content_list.start_index(),
+             'list': [item for item in content_list]}

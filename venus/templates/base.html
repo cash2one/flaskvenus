@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <title>{% block title %}:Venus{% endblock %}</title>
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+{% for message in get_flashed_messages() %}
+<div class="flash">{{ message }}</div>
+{% endfor %}
+
+<nav >
+    <a href="{{ url_for('index') }}">Home</a> |
+    {% if logged_in %}
+        {{ username }} login <a href="{{ url_for('logout') }}">logout</a>
+    {% else %}
+    <p>
+    	<a href="{{ url_for('login') }}">登录</a>
+    	<a href="{{ url_for('register') }}">注册</a>
+    </p>
+    {% endif %}
+</nav>
+
+<div id="main_content">
+    {% block body %}{% endblock %}
+</div>
+
+</body>
+
+</html>

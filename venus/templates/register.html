@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}注册{% endblock %}
+
+{% block beforehead %}
+
+<script>
+
+function validateEmail(email) {
+    var re = /^[a-z0-9\.\-\_]+\@[a-z0-9\-\_]+(\.[a-z0-9\-\_]+){1,4}$/;
+    return re.test(email.toLowerCase());
+}
+
+</script>
+
+{% endblock %}
+
+{% block body %}
+      <h1>欢迎注册！</h1>
+      <form action="{{ url_for('register_user') }}" method=post >
+      	  <p><label>昵称： <input type="text" name="name"/></label></p>
+          <p><label>手机号： <input type="text" name="phoneNo"/></label></p>
+		  <p><label>密　码： <input type="password" name="password" value="" /></label></p>
+		  <p><label>确认密码： <input type="password" name="ensure_pw" value="" /></label></p>
+		  <p><input type="submit" value=" 注册 " name="submit" style="margin-left:60px;" /></p>
+      </form>
+{% endblock %}
