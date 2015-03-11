@@ -1,4 +1,4 @@
-from com.enjoyment import app
+from venus import app
 
 def testview():
     with app.test_request_context():

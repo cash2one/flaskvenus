@@ -4,7 +4,7 @@
 """
 import string
 import random
-import hashlib
+import hashlib, time
 from .paginator import Paginator, EmptyPage, InvalidPage
 
 def random_key():
@@ -30,9 +30,12 @@ def paginate_list(content_list, from_index=0, per_page=10):
     paginator = Paginator(content_list, per_page)
 
     try:
-        content_list = paginator.page(from_index/per_page)
+        content_list = paginator.page(from_index/per_page + 1)
     except (EmptyPage, InvalidPage):
         content_list = paginator.page(paginator.num_pages)
 
-    return {'totalCount': paginator.count, 'startIndex': content_list.start_index(),
+    return {'totalCount': paginator.count, 'startIndex': content_list.start_index() - 1,
              'list': [item for item in content_list]}
+    
+def timestamp_ms():
+    return round(time.time()*1000)

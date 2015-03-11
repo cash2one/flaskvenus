@@ -1,5 +1,5 @@
 
-import re,  base64, hashlib, logging, time, base64,json
+import re, os, base64, hashlib, logging, time, base64,json
 from flask import request, render_template, make_response, redirect, jsonify
 #from flask.ext.httpauth import HTTPBasicAuth
 from .models import User
@@ -13,21 +13,22 @@ _RE_MD5 = re.compile(r'^[0-9a-f]{32}$')
 _COOKIE_NAME = 'venus'
 _COOKIE_KEY = 'venus'
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 def index():
     login = request.args.get('logged_in', False)
     return render_template('index.html', title=__name__, content='hello, flask!!', logged_in = login)
 
-@app.route('/register')    
-def register(methods=['GET']):
-    return render_template('register.html')
+@app.route('/register', methods=['GET'])    
+def register():
+    files = os.listdir('venus/static/upload')
+    return render_template('register.html', filenames = [filename.rsplit('.', 1)[0] for filename in files] )
     
-@app.route('/login')
-def login(methods=['GET']):
+@app.route('/login', methods=['GET'])
+def login():
     return render_template('login.html');
 
-@app.route('/logout')
-def logout(methods=['GET']):
+@app.route('/logout', methods=['GET'])
+def logout():
     response = make_response(render_template('index.html', logged_in = False))
     response.delete_cookie(_COOKIE_NAME)
     return redirect(url_for('index'))    
@@ -46,7 +47,7 @@ def authenticate():
     except DoesNotExist as e:
         raise APIError(-1, 'uid', 'Invalid username.')
         
-    if user.password != password:
+    if user._password != password:
         raise APIError(-1, 'password', 'Invalid password.')
 
     max_age = 604800

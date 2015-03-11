@@ -1,6 +1,6 @@
 import time, datetime,json
 from flask import request
-from .models import Distraction, Location
+from .models import Distraction, Location, User
 from . import app, db, locationresolver,utils
 from .apis import api, APIError, APIValueError
 from bson.son import SON
@@ -18,7 +18,7 @@ def add_distraction():
     da.pay_type = int(form.get('paytype', '0'))
     da.create_user_id = int(form['createuser'])
     da.start_time = form['starttime']
-    da.create_time = int(round(time.time()*1000))
+    da.create_time = int(utils.timestamp_ms())
     
     address = form['address'];
     longitude = int(form.get('longitude', 0.0))
@@ -29,7 +29,14 @@ def add_distraction():
 
 def append_distance(da, distance):
     da['_id'] = str(da['_id'])
-    da['disatance'] = distance
+    da['farawayMeters'] = round(distance)
+    uin = da['createUserId']
+    del da['createUserId']
+    user = User.objects.get(uin=uin)
+    da['createUserInfo'] = {'uin' : uin,
+                        'name' : user.name,
+                        'headerImgUrl' : user.avatarId,
+                        'sexType': user.sexType}
     return da
 
             
@@ -53,6 +60,10 @@ def nearby():
     dacol = Distraction.objects._collection
     cmd_rs = dacol.database.command(cmd)
     results = cmd_rs['results']
+    if(from_index > len(results)):
+        raise APIError(-1, from_index, 'start index is great than total')
+    
+    results = results[from_index:from_index+per_num]
     dalist = [append_distance(result['obj'], result['dis']) for result in results]
     page = utils.paginate_list(dalist, from_index, per_num)
     return page, 0
