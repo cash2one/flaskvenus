@@ -20,7 +20,6 @@ Flask-RESTful==0.3.1
 Flask-Script==2.0.5
 Flask-Security==1.6.11
 Flask-Testing==0.4.2
--e git://github.com/plausibility/flask-themes2.git@5ccf910ffe4f2c24a8148dee1def6747faa3a98c#egg=Flask_Themes2-origin/HEAD
 Flask-WTF==0.10.3
 Jinja2==2.7.3
 MarkupSafe==0.23
