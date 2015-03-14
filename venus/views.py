@@ -73,6 +73,10 @@ def not_found(error):
 def invalidate_param(error):
     return 'invalidate paramters', 400
 
+@app.errorhandler(APIError)
+def handle_invalid_usage(error):
+    return jsonify(error.to_dict())
+
 # 计算加密cookie:
 def make_signed_cookie(id, password, max_age):
     expires = str(int(time.time() + max_age))

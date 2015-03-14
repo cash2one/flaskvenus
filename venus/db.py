@@ -2,6 +2,7 @@
 
 from flask import g
 from flask_mongoengine import MongoEngine
+from . import app
 
 def get_db(app):
     db = getattr(g, '_database', None)

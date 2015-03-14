@@ -1,4 +1,7 @@
-from venus import app
+
+from venus import app, init_app
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0')
+    app.config.from_pyfile('settings_dev.py')
+    init_app()
+    app.run(debug=app.config['DEBUG'])
