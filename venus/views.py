@@ -19,8 +19,9 @@ def index():
     return render_template('index.html', title=__name__, content='hello, flask!!', logged_in = login)
 
 @app.route('/register', methods=['GET'])    
-def register():
-    files = os.listdir('venus/static/upload')
+def register():            
+    upload_path = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'])
+    files = os.listdir(upload_path)
     return render_template('register.html', filenames = [filename.rsplit('.', 1)[0] for filename in files] )
     
 @app.route('/login', methods=['GET'])
@@ -54,6 +55,7 @@ def authenticate():
     auth_token = make_signed_cookie(user.id, user.password, max_age)
     #response = make_response(render_template('index.html', logged_in = True, username=user.name))
     #response.set_cookie(_COOKIE_NAME, cookie, max_age=max_age)
+
     logging.debug(user.name + 'login success!!')
     
     return user.to_api()
