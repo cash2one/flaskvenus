@@ -23,7 +23,7 @@ def upload_image():
         ext='png'
         filename = '%s.%s'%(str(ObjectId()), ext) 
         image.save(path.join(UPLOAD_FOLDER, filename))
-        return {'url':app.config.get('HOST_BASE') + url_for('get_image', imageid=filename)}
+        return {'url':app.config.get('HOST_BASE') + url_for('get_image', imageid=filename)},0
     else:
         return 'bad request', 400
             

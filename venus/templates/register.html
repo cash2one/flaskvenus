@@ -28,7 +28,7 @@ function validateEmail(email) {
       <br />
       <br />
       
-	<form action="{{ url_for('set_avatar', 102) }}" method=post >
+	<form action="{{ url_for('set_avatar', uin=102) }}" method=post >
 	  	<p><label>账号： <input type="number" name="uin"/></label></p>
 	  	<p><label>头像： <input type="text" name="avatarurl" value="" /></label></p>
 		<p><input type="submit" value=" 设置 " name="submit" style="margin-left:60px;" /></p>
