@@ -41,11 +41,15 @@ def get_current_user(request):
     return None    
         
     
-def ensure_admin(request):
-    user = get_current_user(request)
+def is_admin(uin):
+    user = User.objects.get(uin=uin)
     if user and user.is_admin():
         return True
     return False
+
+def ensure_admin(request):
+    uin = request.cookies.get('uin')
+    return is_admin(uin)
 
 @app.route('/api/v1/rest/users',  methods=['GET'])
 @api

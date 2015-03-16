@@ -83,15 +83,16 @@ class SDRelation(Document):
     type = IntField()
 
     
- 
-class DATag(ApiDocument):
+#当 Tag.scope为public时,即变成type
+class Tag(ApiDocument):
     #_id = StringField(unique=True,required=True)
     name = StringField(max_length=20, unique=True,required=True) 
     createUIN = LongField(required = True)
     parent = StringField(required=True, default='root')
-    scope = StringField(default = 'pu') #"choice (public,private, friend)
+    scope = StringField(default = 'pu', max_length=2) #"choice (public,private, friend)
+    target_type =  StringField(db_field='target', default = 'scenic', max_length=20) #choice('topic', 'scenic','distraction', 'user')
     pic_url  = StringField(max_length=256)
-    meta = {'collection': 'datag'}
+    meta = {'collection': 'tag'}
         
                        
 class DAType(Document):

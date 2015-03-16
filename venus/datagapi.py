@@ -2,7 +2,7 @@
 
 from flask import request
 from mongoengine.errors import DoesNotExist
-from .models import IDCounter, DATag
+from .models import IDCounter, Tag
 from . import app, db, idmanager,utils
 from .apis import api, APIError, APIValueError
 from bson import ObjectId
@@ -16,7 +16,7 @@ def add_tag():
     name = form['tagname']
     createuin = form['createuin']
     scope = form.get('scope', 'pu')
-    tag = DATag(name=name, parent=parent,createUIN=createuin, scope=scope)
+    tag = Tag(name=name, parent=parent,createUIN=createuin, scope=scope, target_type = 'da')
     #tag['_id'] = ObjectId()
     tag.save()
     return tag.to_api(hide_id=False),0
@@ -25,7 +25,7 @@ def add_tag():
 @api
 def list_all_tag():
     try:
-        list = DATag.objects(scope='pu')
+        list = Tag.objects(scope='pu', target_type = 'da')
     except DoesNotExist as e:
         list = []
         

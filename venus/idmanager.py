@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import logging
-from .models import IDCounter
 from . import db
+from .models import IDCounter
 
-def generateUIN() -> float:
+
+def generateUIN() -> int:
     #这样做有问题,不是原子操作,可能需要直接用mongopy原collection函数findAndModify来实现
     result = IDCounter.objects.filter(idName='uin').update_one(inc__idValue=1, upsert=True)
     if result > 0 :
