@@ -17,16 +17,30 @@ def is_image(content_type):
 @api
 def upload_image():
     files = request.files
-    image = files['image']
-
-    if is_image(image.content_type):
+    if files : 
+        image = files['image']
+        if is_image(image.content_type):
+            ext='png'
+            filename = '%s.%s'%(str(ObjectId()), ext) 
+            upload_path = path.join(app.root_path, app.config['UPLOAD_FOLDER'])
+            image.save(path.join(upload_path, filename))
+            return {'url':app.config.get('VENUS_DOMAIN') + url_for('get_image', imageid=filename.split('.')[0])}, 0
+        else:
+            return 'bad request', 400
+    else:
+        content_type = request.content_type
         ext='png'
         filename = '%s.%s'%(str(ObjectId()), ext) 
         upload_path = path.join(app.root_path, app.config['UPLOAD_FOLDER'])
-        image.save(path.join(upload_path, filename))
-        return {'url':app.config.get('VENUS_DOMAIN') + url_for('get_image', imageid=filename)}, 0
-    else:
-        return 'bad request', 400
+        savefile = open(path.join(upload_path, filename), 'wb')
+        with savefile :
+            from shutil import copyfileobj
+            copyfileobj(request.stream, savefile, request.content_length)
+        return {'url':app.config.get('VENUS_DOMAIN') + url_for('get_image', imageid=filename.split('.')[0])}, 0
+        
+
+
+    
             
 @app.route('/api/v1/image/<imageid>',  methods=['get'])
 def get_image(imageid):

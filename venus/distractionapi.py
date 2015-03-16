@@ -19,7 +19,14 @@ def add_distraction():
     da.create_user_id = int(form['createuser'])
     da.start_time = form['starttime']
     da.create_time = int(utils.timestamp_ms())
-    
+    url_list = form.get('imgurllist', None);
+    if url_list :
+        da.img_url_list = url_list.split(',')
+        
+    tag_list_str = form.get('tagIdList', None)
+    if tag_list_str :
+        da.tag_list = tag_list_str.split(',')
+        
     address = form['address'];
     longitude = int(form.get('longitude', 0.0))
     lantitude = int(form.get('lantitude', 0.0))
@@ -37,6 +44,10 @@ def append_distance(da, distance):
                         'name' : user.name,
                         'headerImgUrl' : user.avatarId,
                         'sexType': user.sexType}
+    img_url_list = da.get('img_url_list')
+    if img_url_list :
+        da['imageurl'] = img_url_list[0]
+        del da['img_url_list']
     return da
 
             

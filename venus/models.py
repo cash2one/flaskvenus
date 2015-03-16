@@ -167,6 +167,7 @@ class Distraction(ApiDocument):
     dst_loc = EmbeddedDocumentField(Location, db_field='dstLoc')
     group_id = StringField()
     tag_list = ListField(StringField(max_length=30))
+    img_url_list = ListField(StringField(max_length = 256))
     like_num = IntField(db_field='likeNum')
     pay_type = IntField()
     max_member_count = IntField()

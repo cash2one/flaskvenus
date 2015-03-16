@@ -1,6 +1,6 @@
 DEBUG = True
 
-VENUS_DOMAIN='http://127.0.0.1:5000'
+VENUS_DOMAIN='http://192.168.1.101'
 UPLOAD_FOLDER='static/upload'
 
 """

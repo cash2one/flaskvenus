@@ -46,6 +46,8 @@ def api(func):
             r = json.dumps(dict(statecode=code, stateDescription='success', body=data))
         except APIError as e:
             r = json.dumps(dict(statecode=e.error, stateDescription=e.message, body=e.payload))
+        except ValueError as e:
+            r = json.dumps(dict(statecode=403, stateDescription='program error!'))
         except Exception as e:
             logging.exception(e)
             r = json.dumps(dict(statecode=403, stateDescription='internalerror'))

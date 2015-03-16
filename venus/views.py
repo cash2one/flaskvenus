@@ -52,13 +52,13 @@ def authenticate():
         raise APIError(-1, 'password', 'Invalid password.')
 
     max_age = 604800
-    auth_token = make_signed_cookie(user.id, user.password, max_age)
+    auth_token = make_signed_cookie(user.id, user._password, max_age)
     #response = make_response(render_template('index.html', logged_in = True, username=user.name))
     #response.set_cookie(_COOKIE_NAME, cookie, max_age=max_age)
 
     logging.debug(user.name + 'login success!!')
     
-    return user.to_api()
+    return user.to_api(), 0
 
 
 def authenticate_user_token(nick, token):
