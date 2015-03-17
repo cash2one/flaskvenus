@@ -10,7 +10,7 @@ from bson import ObjectId
 
 @app.route('/api/v1/sec/datags',  methods=['POST'])
 @api
-def add_tag():
+def add_datag():
     form = request.form
     parent = form.get('parent', None)
     name = form['tagname']
@@ -23,7 +23,7 @@ def add_tag():
     
 @app.route('/api/v1/sec/datags',  methods=['GET'])
 @api
-def list_all_tag():
+def list_all_datag():
     try:
         list = Tag.objects(scope='pu', target_type = 'da')
     except DoesNotExist as e:

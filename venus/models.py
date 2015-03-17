@@ -89,7 +89,8 @@ class Tag(ApiDocument):
     name = StringField(max_length=20, unique=True,required=True) 
     createUIN = LongField(required = True)
     parent = StringField(required=True, default='root')
-    scope = StringField(default = 'pu', max_length=2) #"choice (public,private, friend)
+    #offical指经公司编辑认同后由public提升而来的
+    scope = StringField(default = 'pu', max_length=2) #"choice (offical, public,private, friend)
     target_type =  StringField(db_field='target', default = 'scenic', max_length=20) #choice('topic', 'scenic','distraction', 'user')
     pic_url  = StringField(max_length=256)
     meta = {'collection': 'tag'}

@@ -1,8 +1,12 @@
 #!/usr/bin/python
 
+import os
 from flask_script import Server, Shell, Manager, Command, prompt_bool
 from venus import app, db
 import dbcreate
+from flask_mongoengine import Document
+
+app_dir = os.path.join(os.path.dirname(__file__), "venus")
 
 manager = Manager(app)
 
@@ -21,8 +25,7 @@ def dropall():
     "Drops all database tables"
     
     if prompt_bool("Are you sure ? You will lose all your data !"):
-        database = db.connection.database
-        database.command('dropDatabase')
+        db.connection.drop_database(Document._get_db())
         
 @manager.command
 def migrate():
