@@ -16,7 +16,7 @@ def add_datag():
     name = form['tagname']
     createuin = form['createuin']
     scope = form.get('scope', 'pu')
-    tag = Tag(name=name, parent=parent,createUIN=createuin, scope=scope, target_type = 'da')
+    tag = Tag(name=name, parent=parent,createUIN=createuin, scope=scope, target_type = 'distraction')
     #tag['_id'] = ObjectId()
     tag.save()
     return tag.to_api(hide_id=False),0
@@ -25,7 +25,7 @@ def add_datag():
 @api
 def list_all_datag():
     try:
-        list = Tag.objects(scope='pu', target_type = 'da')
+        list = Tag.objects(scope='pu', target_type = 'distaction')
     except DoesNotExist as e:
         list = []
         

@@ -57,7 +57,7 @@ def make_app(prefix):
         return app
     elif prefix == 'venuscms':
         return app  #cms_app还不存在,暂时用app来替代
-    return app
+    return None
 
 
 if __name__ == '__main__':

@@ -19,6 +19,7 @@ from . import userapi
 from . import distractiontypeapi
 from . import distractionapi
 from . import datagapi
+from . import tagapi
 from . import imageapi
 
 

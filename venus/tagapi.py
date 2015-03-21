@@ -6,6 +6,7 @@ from .models import IDCounter, Tag
 from . import app, db, idmanager,utils, userapi
 from .apis import api, APIError, APIValueError
 from bson import ObjectId
+from flask.helpers import url_for
 
 ALLOW_TAG_TYPE =  set(['topic', 'scenic', 'distraction', 'user'])
 @app.route('/api/v1/sec/tags/<type>',  methods=['POST'])
@@ -44,20 +45,20 @@ def list_all_tag(type):
     return {'total':len(tags), 'list': tags}, 0
  
  
-@app.route('/api/v1/feedgroup',  methods=['GET'])
+@app.route('/api/v1/sec/feedgroup',  methods=['GET'])
 @api
 def list_all_feedgroup():
-    scenic_group = dict(name='推荐地点')     
+    scenic_group = dict(name='推荐地点', moreurl=url_for('add_tag', type='scenic'))     
     tags = Tag.objects(scope='of', target_type = 'scenic')
-    scenic_group['value'] = [tag.to_api() for tag in tags]
+    scenic_group['value'] = [tag.to_api(False) for tag in tags]
     
-    da_group = dict(name='活动') 
+    da_group = dict(name='活动', moreurl=url_for('add_tag', type='distraction')) 
     tags = Tag.objects(scope='of', target_type = 'distraction')
-    da_group['value'] = [tag.to_api() for tag in tags]
+    da_group['value'] = [tag.to_api(False) for tag in tags]
     
-    topic_group = dict(name='专题')
+    topic_group = dict(name='专题', moreurl=url_for('add_tag', type='topic'))
     tags = Tag.objects(scope='of',  target_type = 'topic')
-    topic_group['value'] = [tag.to_api() for tag in tags]
+    topic_group['value'] = [tag.to_api(False) for tag in tags]
     
     feedgroup=[scenic_group, da_group, topic_group]
     return {'total':len(feedgroup), 'list': feedgroup}, 0
