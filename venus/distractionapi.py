@@ -1,7 +1,7 @@
 import time, datetime,json
 from flask import request
-from .models import Distraction, Location, User
-from . import app, db, locationresolver,utils
+from .models import Distraction, Poi, User, RecommendFeed
+from . import app, db, locationresolver,utils, userapi
 from .apis import api, APIError, APIValueError
 from bson.son import SON
 from django.contrib.gis.measure import Distance
@@ -17,7 +17,7 @@ def add_distraction():
     da.description = form.get('description', None)
     da.pay_type = int(form.get('paytype', '0'))
     da.create_user_id = int(form['createuser'])
-    da.start_time = form['starttime']
+    da.start_time = utils.timestamp_ms(form['starttime'])
     da.create_time = int(utils.timestamp_ms())
     url_list = form.get('imgurllist', None);
     if url_list :
@@ -28,10 +28,14 @@ def add_distraction():
         da.tag_list = tag_list_str.split(',')
         
     address = form['address'];
-    longitude = int(form.get('longitude', 0.0))
-    lantitude = int(form.get('lantitude', 0.0))
-    da.dst_loc = locationresolver.resolve(address, longitude, lantitude)
+    longitude, lantitude = form['location'].split(',')
+    da.dst_loc = locationresolver.resolve(address, float(longitude), float(lantitude))
     da.save()
+    
+    recommend = int(form.get('recommend', '0'))
+    if recommend == 1 and userapi.is_admin(da.create_user_id):
+        feed = RecommendFeed(feedid=str(da['id']),subject='distraction')
+        feed.save()
     return da.to_api(False), 0
 
 def append_distance(da, distance):
@@ -55,16 +59,15 @@ def append_distance(da, distance):
 @api
 def nearby():
     args = request.args
-    address = args.get('address', None);
-    longitude = float(args.get('longitude', 0.0))
-    latitude = float(args.get('latitude', 0.0))
-    location = locationresolver.resolve(address, longitude, latitude)
+    location_str = args['location']
+    location_list = location_str.split(',')
+    location = [float(loc) for loc in location_list]
     distance = float(args.get('distanceMeters', '50000.0'))
     per_num = int(args.get("maxItemPerPage", "10"))
     from_index = int(args.get("fromIndex", "0"))
     cmd = SON()
     cmd['geoNear'] = Distraction._get_collection_name()
-    cmd['near'] = location.location
+    cmd['near'] = location
     cmd['maxDistance'] = distance/EARTH_RADIUS_METERS
     cmd['distanceMultiplier'] =EARTH_RADIUS_METERS 
     cmd['spherical'] = True

@@ -1,0 +1,11 @@
+{
+  "title":        "穿越东涌",
+  "summary":      "又是一年穿越季,骚年们,动起来!", 
+  "description":  "位于深圳东南大鹏半岛的最南端，沿海岸风景优美,沙滩长约500米，三面环山，对面有岛屿。其2端分别各有酒店，沙滩左边为原深发展银行的拓展训练基地",
+  "createuser" : 101,
+  "starttime" :  "2015-3-28 09:30:00",
+  "imgurllist" :  "http://120.24.208.105/venus/api/v1/image/da1,  http://120.24.208.105/venus/api/v1/image/da2", 
+  "address" :   "深圳市西丽镇车管所",
+  "location" :  "113.9, 22.5",
+  "recommend" : 1
+}

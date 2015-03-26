@@ -1,5 +1,5 @@
 # -*- coding:utf-8 -*-
-from .models import Location
+from .models import Poi
 import hashlib, httplib2, json
 from urllib.parse import urlencode,quote_plus
 
@@ -44,17 +44,17 @@ def _resolve(address):
         except :
             raise
     
-    return  Location(address=address, location=[longitude, latitude], confidence=confidence)
+    return  Poi(address=address, location=[longitude, latitude], confidence=confidence)
                     
 def resolve(address, longitude, latitude):
     if  address:
         if  longitude and latitude: 
-            return Location(address=address, location=[longitude, latitude])
+            return Poi(address=address, location=[longitude, latitude])
         else:
             return _resolve(address)
         
     elif longitude and latitude:
-        return Location(address='unknow', location=[longitude, latitude])
+        return Poi(address='unknow', location=[longitude, latitude])
     
     else:
         raise ValueError 

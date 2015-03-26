@@ -1,0 +1,10 @@
+{
+  "title":        "文艺免费好地方,观澜版画村",
+  "summary":      "客家人居住的古村落", 
+  "description":  "这是中国新兴木刻运动陈烟桥先生的故里,典型的客家人居住的古村落",
+  "createuser" : 101,
+  "imgurllist" :  "http://120.24.208.105/api/v1/image/scenic1,  http://120.24.208.105/api/v1/image/scenic2", 
+  "address" :   "深圳市西丽镇车管所",
+  "location" :  "113.9, 22.5",
+  "recommend" : 1
+}

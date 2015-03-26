@@ -37,5 +37,11 @@ def paginate_list(content_list, from_index=0, per_page=10):
     return {'totalCount': paginator.count, 'startIndex': content_list.start_index() - 1,
              'list': [item for item in content_list]}
     
-def timestamp_ms():
-    return round(time.time()*1000)
+def timestamp_ms(time_str=None):
+    if time_str:
+        time_array = time.strptime(time_str, "%Y-%m-%d %H:%M:%S")
+        #转换为时间戳:
+        time_second = time.mktime(time_array)
+    else:
+        time_second = time.time()
+    return round(time_second*1000)

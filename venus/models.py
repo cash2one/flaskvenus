@@ -43,7 +43,7 @@ class User(Document):
         return son.to_dict()
     
     def is_admin(self):
-        return self.role == ADMIN
+        return self.role == User.ADMIN
     
 class Profile(ApiDocument):
     uin = LongField(unique=True, required=True)
@@ -91,7 +91,7 @@ class Tag(ApiDocument):
     parent = StringField(required=True, default='root')
     #offical指经公司编辑认同后由public提升而来的
     scope = StringField(default = 'pu', max_length=2) #"choice (offical, public,private, friend)
-    target_type =  StringField(db_field='target', default = 'scenic', max_length=20) #choice('topic', 'scenic','distraction', 'user')
+    subject =  StringField(default = 'scenic', max_length=20) #choice('topic', 'scenic','distraction', 'user')
     pic_url  = StringField(max_length=256)
     meta = {'collection': 'tag'}
         
@@ -124,9 +124,10 @@ class DAType(Document):
         
 
 
-class Location(EmbeddedDocument):
+class Poi(EmbeddedDocument):
     city = StringField(max_length=10)
-    address = StringField()
+    name = StringField(max_length=10)
+    address = StringField(max_length=100)
     location = ListField()
     confidence = IntField(default=100)
     #position  = GeoPointField()
@@ -139,21 +140,23 @@ class Comment(EmbeddedDocument):
     content = StringField(max_length=140)
 
 class Scenic(ApiDocument):
-    theme = StringField(max_length=20)
+    title = StringField(max_length=20)
     summary = StringField(max_length=50)
     create_user_id = LongField(db_field='createUserId', required=True)
     create_time = LongField(db_field='createTime', default=utils.timestamp_ms)
-    location = EmbeddedDocumentField(Location, db_field='originLoc')
+    location = EmbeddedDocumentField(Poi)
     description = StringField(max_length=500, required=True)
     tag_list = ListField(StringField(max_length=30))
-    expired_da = ListField(StringField(max_length=32))
-    pending_da = ListField(StringField(max_length=32))
+    da_list = ListField(StringField(max_length=30))
     like_num = IntField(db_field='likeNum')
     #TODO comment num is limit , becaus document is limit 
     comment_list = ListField(EmbeddedDocumentField(Comment))
     pic_main  = StringField(max_length=256)
     pic_others  = ListField(StringField(max_length=256))
     prop_ex = DictField()
+    meta = {
+    'indexes': ['*location.location',],
+    'ordering': ['create_time']} 
     
     
         
@@ -165,8 +168,8 @@ class Distraction(ApiDocument):
     #creatUser = ReferenceField(User)
     create_user_id = LongField(db_field='createUserId', required=True)
     description = StringField(max_length=500, required=True)
-    origin_loc = EmbeddedDocumentField(Location, db_field='originLoc')
-    dst_loc = EmbeddedDocumentField(Location, db_field='dstLoc')
+    origin_loc = EmbeddedDocumentField(Poi, db_field='originLoc')
+    dst_loc = EmbeddedDocumentField(Poi, db_field='dstLoc')
     group_id = StringField()
     tag_list = ListField(StringField(max_length=30))
     img_url_list = ListField(StringField(max_length = 256))
@@ -176,8 +179,6 @@ class Distraction(ApiDocument):
     min_member_count = IntField() 
     #TODO comment num is limit , becaus document is limit 
     comment_list = ListField(EmbeddedDocumentField(Comment))
-    pic_main  = StringField(max_length=256)
-    pic_others  = ListField(StringField(max_length=256))
     prop_ex = DictField()
     
     meta = {
@@ -188,8 +189,15 @@ class Distraction(ApiDocument):
 class Topic(ApiDocument):
     title = StringField(max_length=20)
     summary = StringField(max_length=50)
+    imgurl = StringField(max_length=256)
     create_time = LongField(db_field='createTime', default=utils.timestamp_ms)
-    
+
+class RecommendFeed(ApiDocument):
+    feedid=StringField(max_length=32)
+    _ttl_day =IntField(db_field = 'ttl_day', default=5)
+    subject =  StringField(default = 'scenic', max_length=20) #choice('topic', 'scenic','distraction')
+    create_time = LongField(db_field='createTime', default=utils.timestamp_ms)
+        
     
 class IDCounter(DynamicDocument):
     key = StringField(max_length=20, db_field='idName', required=True)

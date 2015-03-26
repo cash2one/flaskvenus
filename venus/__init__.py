@@ -21,6 +21,8 @@ from . import distractionapi
 from . import datagapi
 from . import tagapi
 from . import imageapi
+from . import scenicapi
+from . import recommendfeedapi
 
 
     

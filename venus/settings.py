@@ -3,7 +3,7 @@ DEBUG = True
 SECRET_KEY = 'sdfsdf82347$$%$%$%$&fsdfs!!ASx+__WEBB$'
 
 ADMIN=[101, 102,103]
-VENUS_DOMAIN='http://120.24.208.105'
+VENUS_DOMAIN='120.24.208.105'
 
 UPLOAD_FOLDER='/alidata/www/upload'
 

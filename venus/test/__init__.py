@@ -1,0 +1,1 @@
+from .apitest import TagApiTest, ScenicApiTest, DAApiTest, RecommendFeddApiTest
