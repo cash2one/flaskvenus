@@ -5,8 +5,8 @@
   "create_user_id" : 101,
   "like_num" :    1032,
   "location" : {"address" :   "深圳市龙岗区观澜版画村", "name": "观澜版画村", "location": [113.9, 22.5]},
-  "pic_main":     "http://120.24.208.105/venus/api/v1/image/scenic1",
-  "pic_others" :  ["http://120.24.208.105/venus/api/v1/image/scenic2",  
+  "main_imgurl":     "http://120.24.208.105/venus/api/v1/image/scenic1",
+  "others_imgurl" :  ["http://120.24.208.105/venus/api/v1/image/scenic2",  
   					"http://120.24.208.105/venus/api/v1/image/scenic3"],
   "comment_list" : [{"create_user_id" : 102, "create_time" : 1427351991000, "content":"市区过去好远,观澜那边正在修路,好堵啊!!"},
   					{"create_user_id" : 103, "create_time" : 1427352991000, "content":"风景不错,里面相对比较复古, 但又不是很古老那种, 有点人文气自息"}

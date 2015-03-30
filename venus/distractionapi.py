@@ -1,10 +1,11 @@
 import time, datetime,json
 from flask import request
-from .models import Distraction, Poi, User, RecommendFeed
+from .models import Distraction, Poi, User, RecommendFeed, Tag
 from . import app, db, locationresolver,utils, userapi
 from .apis import api, APIError, APIValueError
 from bson.son import SON
 from django.contrib.gis.measure import Distance
+from werkzeug.exceptions import NotFound
 
 EARTH_RADIUS_METERS = 6378137;
 
@@ -41,6 +42,15 @@ def add_distraction():
 def append_distance(da, distance):
     da['_id'] = str(da['_id'])
     da['farawayMeters'] = round(distance)
+ 
+    fill_user_info(da)
+    img_url_list = da.get('img_url_list')
+    if img_url_list :
+        da['imageurl'] = img_url_list[0]
+        del da['img_url_list']
+    return da
+
+def fill_user_info(da):
     uin = da['createUserId']
     del da['createUserId']
     user = User.objects.get(uin=uin)
@@ -48,16 +58,10 @@ def append_distance(da, distance):
                         'name' : user.name,
                         'headerImgUrl' : user.avatarId,
                         'sexType': user.sexType}
-    img_url_list = da.get('img_url_list')
-    if img_url_list :
-        da['imageurl'] = img_url_list[0]
-        del da['img_url_list']
-    return da
-
             
 @app.route('/api/v1/sec/distractions',  methods=['get'])
 @api
-def nearby():
+def get_nearby_distraction():
     args = request.args
     location_str = args['location']
     location_list = location_str.split(',')
@@ -81,6 +85,21 @@ def nearby():
     dalist = [append_distance(result['obj'], result['dis']) for result in results]
     page = utils.paginate_list(dalist, from_index, per_num)
     return page, 0
+ 
+@app.route('/api/v1/sec/distractions/<feedid>',  methods=['get'])
+@api
+def get_distraction(feedid):   
+    distraction = Distraction.objects.with_id(feedid)
+    if distraction is None:
+        raise NotFound
     
+    result = distraction.to_api()
+    fill_user_info(result)
     
-        
+    result['tag_list'] = []
+    for tagid in distraction.tag_list:
+        tag = Tag.objects.with_id(tagid)
+        if tag: 
+            result['tag_list'].append(tag.to_api())
+    
+    return result, 0   

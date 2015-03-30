@@ -20,7 +20,8 @@ def add_recommend_feed():
 
 
 class Feed(object):
-    def __init__(self, title, summary, imgurl, subject):
+    def __init__(self,id, title, summary, imgurl, subject):
+        self.id=str(id)
         self.title = title
         self.summary = summary
         self.imgurl=imgurl
@@ -33,6 +34,7 @@ class Feed(object):
 @api
 def get_all_recommend_feed():
     args = request.args
+    city = args.get('city', "深圳")
     per_num = int(args.get("maxItemPerPage", "10"))
     from_index = int(args.get("fromIndex", "0"))
     
@@ -42,24 +44,24 @@ def get_all_recommend_feed():
         
         for recommend in list :
             if 'distraction' == recommend.subject:
-                da = Distraction.objects.get(id=recommend.feedid)
+                da = Distraction.objects.with_id(recommend.feedid)
                 if da is None:
                     continue
                 if da.img_url_list :
                     imgurl=da.img_url_list[0] 
                 else:
                     imgurl=None 
-                feedlist.append( Feed(da.title, da.description, imgurl, 'distraction').to_api())
+                feedlist.append( Feed(da.id, da.title, da.description, imgurl, 'distraction').to_api())
             elif 'scenic' == recommend.subject:
                 scenic = Scenic.objects.get(id=recommend.feedid)
                 if scenic is None:
                     continue
-                feedlist.append(Feed(scenic.title, scenic.summary, scenic.pic_main, 'scenic').to_api())
+                feedlist.append(Feed(scenic.id, scenic.title, scenic.summary, scenic.main_imgurl, 'scenic').to_api())
             elif 'topic' == recommend.subject:
-                topic = Topic.objects(id=recommend.feedid)
+                topic = Topic.objects.with_id(recommend.feedid)
                 if topic is None:
                     continue
-                feedlist.append(Feed(topic.title, topic.summary, topic.imgurl, 'topic').to_api())
+                feedlist.append(Feed(topic.id, topic.title, topic.summary, topic.imgurl, 'topic').to_api())
                 
     except DoesNotExist as e:
         pass

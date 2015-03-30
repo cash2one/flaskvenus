@@ -1,6 +1,7 @@
 import time, datetime,json
 from flask import request
-from .models import Poi, Scenic, RecommendFeed
+from werkzeug.exceptions import NotFound
+from .models import Poi, Scenic, RecommendFeed, Tag, Distraction
 from . import app, db, locationresolver,utils, userapi
 from .apis import api, APIError, APIValueError
 from bson.son import SON
@@ -20,8 +21,8 @@ def add_scenic():
     url_str = form.get('imgurllist', None)
     if url_str:
         urllist = url_str.split(',')
-        scenic.pic_main = urllist[0]
-        scenic.pic_others = urllist[1:]
+        scenic.main_imgurl = urllist[0]
+        scenic.others_imgurl = urllist[1:]
         
     address = form['address'];
     location = form['location']
@@ -42,7 +43,7 @@ def append_distance(scenic, distance):
             
 @app.route('/api/v1/sec/scenics',  methods=['get'])
 @api
-def get_scenics():
+def get_nearby_scenics():
     args = request.args
     location_str = args['location']
     location_list = location_str.split(',')
@@ -63,5 +64,26 @@ def get_scenics():
     page = utils.paginate_list(scenics, from_index, per_num)
     return page, 0
     
+@app.route('/api/v1/sec/scenics/<feedid>',  methods=['get'])
+@api
+def get_scenic(feedid):
+    scenic = Scenic.objects.with_id(feedid)
+    if scenic is None:
+        raise NotFound()
+    
+    result=scenic.to_api()
+    result['tag_list'] = []
+    for tagid in scenic.tag_list:
+        tag = Tag.objects.get(id=tagid)
+        if tag: 
+            result['tag_list'].append(tag.to_api())
+    
+    result['da_list'] =[]
+    for daid in scenic.da_list:
+        da = Distraction.objects.get(id=daid)
+        if da :
+            result['da_list'].append(da.to_api())
+            
+    return result, 0
     
         

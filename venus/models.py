@@ -135,24 +135,24 @@ class Poi(EmbeddedDocument):
     #latitude = FloatField()
 
 class Comment(EmbeddedDocument):
-    create_user_id = LongField(db_field='createUserId', required=True)
-    create_time = LongField(db_field='createTime', default=utils.timestamp_ms)
+    create_user_id = LongField( required=True)
+    create_time = LongField(default=utils.timestamp_ms)
     content = StringField(max_length=140)
 
 class Scenic(ApiDocument):
     title = StringField(max_length=20)
     summary = StringField(max_length=50)
-    create_user_id = LongField(db_field='createUserId', required=True)
-    create_time = LongField(db_field='createTime', default=utils.timestamp_ms)
+    create_user_id = LongField( required=True)
+    create_time = LongField(default=utils.timestamp_ms)
     location = EmbeddedDocumentField(Poi)
     description = StringField(max_length=500, required=True)
     tag_list = ListField(StringField(max_length=30))
     da_list = ListField(StringField(max_length=30))
-    like_num = IntField(db_field='likeNum')
+    like_num = IntField()
     #TODO comment num is limit , becaus document is limit 
     comment_list = ListField(EmbeddedDocumentField(Comment))
-    pic_main  = StringField(max_length=256)
-    pic_others  = ListField(StringField(max_length=256))
+    main_imgurl  = StringField(max_length=256, )
+    others_imgurl  = ListField(StringField(max_length=256))
     prop_ex = DictField()
     meta = {
     'indexes': ['*location.location',],

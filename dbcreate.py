@@ -1,5 +1,4 @@
 from venus import app,  db
-from venus.settings import MONGODB_SETTINGS
 import os,json
 from venus.models import IDCounter, User, Tag, Scenic, RecommendFeed, Distraction
 
@@ -68,6 +67,7 @@ def init_scenic_feed():
         file = open(os.path.join(scenic_data_base, name), encoding='utf-8')
         scenic = Scenic.from_json(file.read())
         file.close()
+        scenic.tag_list=[str(tag.id) for tag in Tag.objects(scope='pu', subject='scenic')]
         scenic.save()
         recommend = RecommendFeed(feedid=str(scenic.id), subject='scenic')
         recommend.save()
@@ -79,6 +79,7 @@ def init_distraction_feed():
         file = open(os.path.join(da_data_base, name), encoding='utf-8')
         distraction = Distraction.from_json(file.read())
         file.close()
+        distraction.tag_list=[str(tag.id) for tag in Tag.objects(scope='pu', subject='distraction')]
         distraction.save()
         recommend = RecommendFeed(feedid=str(distraction.id), subject='distraction')
         recommend.save()
