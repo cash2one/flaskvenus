@@ -46,7 +46,7 @@ def append_distance(da, distance):
     fill_user_info(da)
     img_url_list = da.get('img_url_list')
     if img_url_list :
-        da['imageurl'] = img_url_list[0]
+        da['imgurl'] = img_url_list[0]
         del da['img_url_list']
     return da
 

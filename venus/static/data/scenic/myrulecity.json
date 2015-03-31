@@ -1,0 +1,16 @@
+{
+  "title":        "麦鲁小城,遛娃好去处!",
+  "summary":      "麦鲁小城,全新儿童的职业体验乐园", 
+  "description":  "麦鲁小城是一座迷你版的儿童城市，城里有数十座不同风格的房屋，也有热闹的街区和繁忙的交通。在这里，小朋友有自己的身份证和银行卡，还可以体验不同的角 色扮演，警察、消防员、空姐、医生、记者、点心师、摄影师……五十多种职业应有尽有。完成工作之后，还可以赚取到“麦元”，在园区里面享用美食、购买纪念 品、报名参加职业培训",
+  "create_user_id" : 102,
+  "like_num" :    1032,
+  "location" : {"address" :   "深圳市南山区白石路东8号欢乐海岸购物中心二楼东端", "name": "欢乐海岸麦鲁小城", "location": [113.9, 22.5]},
+  "main_imgurl":     "http://120.24.208.105/venus/api/v1/image/scenic4",
+  "others_imgurl" :  ["http://120.24.208.105/venus/api/v1/image/scenic5",  
+  					"http://120.24.208.105/venus/api/v1/image/scenic6", 
+  					"http://120.24.208.105/venus/api/v1/image/scenic7"],
+  "comment_list" : [{"create_user_id" : 102, "create_time" : 1427351991000, "content":"市区过去好远,观澜那边正在修路,好堵啊!!"},
+  					{"create_user_id" : 103, "create_time" : 1427352991000, "content":"风景不错,里面相对比较复古, 但又不是很古老那种, 有点人文气自息"}
+  				   ]
+  					
+}

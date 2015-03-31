@@ -1,0 +1,15 @@
+{
+  "title":        "中大田园农庄,采草莓",
+  "summary":      "水果季", 
+  "description":  "中大田园农庄,占地600亩。旁边为松子坑水库,水质优良，所种养农品安全、健康、鲜美。中大田园农庄，一直致力于仿生态种养方式的尝试，目的就是期望建立起一种以农产品生命全息透明化为市场导向的消费模式。这是从科学技术层面上逐步摆脱诸如农新产品重金属污染、激素污染、抗生素污染、矿物质缺失等的有效方法。中大田园农庄，那垂柳钓鱼木屋、手摘草莓",
+  "create_user_id" : 102,
+  "start_time" :  1427352991000,
+  "like_num"   : 6324,
+  "img_url_list" :  ["http://120.24.208.105/venus/api/v1/image/distraction4",  
+  					"http://120.24.208.105/venus/api/v1/image/distraction5"], 
+  "dstLoc" :  {"address" :   "深圳市龙岗区中大田园农庄", "name": "中大田园农庄", "location": [113.9, 22.5]},
+  "max_member_count" : 20,
+  "comment_list" : [{"create_user_id" : 102, "create_time" : 1427351991000, "content":"走到梅林水库的话,大概要5个小时"},
+  					{"create_user_id" : 103, "create_time" : 1427352991000, "content":"山太矮了,没有挑战性"}
+  				   ]
+}
