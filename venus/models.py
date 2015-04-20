@@ -1,6 +1,6 @@
 import datetime
 from mongoengine import (Document, DynamicDocument, EmbeddedDocument,LongField, SequenceField, DictField,
-                        IntField, StringField, ListField, ReferenceField, EmbeddedDocumentField, 
+                        BooleanField, IntField, StringField, ListField, ReferenceField, EmbeddedDocumentField, 
                         DateTimeField, GeoPointField , connect)
 from mongoengine.fields import FloatField
 from bson import json_util
@@ -25,11 +25,11 @@ class User(Document):
     MODERATOR = 200
     ADMIN = 300
     
-    uin = LongField(unique=True, required=True)
+    uin = LongField(primary_key=True, unique=True,  required=True)
     name = StringField(max_length=50)
     phoneNO = StringField(max_length=50, unique=True)
     _password = StringField(db_field='password', max_length=200)
-    role = IntField(default=MEMBER)
+    role = IntField(choices=(MEMBER, MODERATOR, ADMIN), default=MEMBER)
     avatarId = StringField(max_length=256)
     sexType = IntField(default=1)
     meta = {'abstract': False, 'indexes': ['uin']}
@@ -48,6 +48,8 @@ class User(Document):
 class Profile(ApiDocument):
     uin = LongField(unique=True, required=True)
     avatar_id = StringField(max_length=50)
+    last_login_at = DateTimeField()
+    current_login_at = DateTimeField()
     like_das = ListField(StringField(max_length=32))
     collect_das = ListField(StringField(max_length=32))
     like_scs = ListField(StringField(max_length=32))
@@ -55,7 +57,7 @@ class Profile(ApiDocument):
         
 class Presence(Document):
     uin = LongField(unique=True, required=True)
-    updated_at =  DateTimeField(default=utils.timestamp_ms)
+    updated_at =  DateTimeField(default=datetime.datetime.now)
     auth_token = StringField(max_length=50)
     
 #用户和用户之间的关系
@@ -87,7 +89,7 @@ class SDRelation(Document):
 class Tag(ApiDocument):
     #_id = StringField(unique=True,required=True)
     name = StringField(max_length=20, unique=True,required=True) 
-    createUIN = LongField(required = True)
+    createuin = LongField(required = True)
     parent = StringField(required=True, default='root')
     #offical指经公司编辑认同后由public提升而来的
     scope = StringField(default = 'pu', max_length=2) #"choice (offical, public,private, friend)
@@ -103,6 +105,7 @@ class DAType(Document):
     scope = IntField(default=1)
     meta = {'collection': 'datype'}
     
+        
     def gettype(self):
         """
         Returns (typename, maintype, subtype)
@@ -112,6 +115,16 @@ class DAType(Document):
     def settype(self, type_name, sub_type, main_type=0):
         self._typeId = ((main_type & 0xffff) << 16)|(sub_type & 0xffff)
         self._typeName = type_name
+        
+    @property
+    def type(self):
+        return self.gettype()
+    
+    @type.setter
+    def type(self, **kargs):
+        self.settype(type_name=kargs['type_name'], 
+                     sub_type=kargs['type_name'], 
+                     main_type=kargs.get('main_type', 0))
         
     def to_api(self, hide_id = True):
         output = {}
@@ -136,14 +149,19 @@ class Poi(EmbeddedDocument):
 
 class Comment(EmbeddedDocument):
     create_user_id = LongField( required=True)
-    create_time = LongField(default=utils.timestamp_ms)
+    create_time = DateTimeField(default=datetime.datetime.now)
     content = StringField(max_length=140)
+    deleted = BooleanField()
+    
+    @property
+    def creater(self):
+        return User.objects.get(uin=create_user_id).to_api()
 
 class Scenic(ApiDocument):
     title = StringField(max_length=20)
     summary = StringField(max_length=50)
     create_user_id = LongField( required=True)
-    create_time = LongField(default=utils.timestamp_ms)
+    create_time = DateTimeField()
     location = EmbeddedDocumentField(Poi)
     description = StringField(max_length=500, required=True)
     tag_list = ListField(StringField(max_length=30))
@@ -157,6 +175,10 @@ class Scenic(ApiDocument):
     meta = {
     'indexes': ['*location.location',],
     'ordering': ['create_time']} 
+    
+    @property
+    def creater(self):
+        return User.objects.get(uin=create_user_id).to_api()
     
     
         

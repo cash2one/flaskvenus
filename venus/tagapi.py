@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from flask import request
+from flask import request, abort
 from mongoengine.errors import DoesNotExist
+from flask_mongoengine.wtf import model_form
 from .models import IDCounter, Tag
 from . import app, db, idmanager,utils, userapi
 from .apis import api, APIError, APIValueError
@@ -9,14 +10,16 @@ from bson import ObjectId
 from flask.helpers import url_for
 
 ALLOW_TAG_SUBJECT =  set(['topic', 'scenic', 'distraction', 'user'])
-@app.route('/api/v1/sec/tags/<subject>',  methods=['POST'])
+        
+        
+@app.route('/api/v1/sec/tags/<subject>',  methods=['POST'])                          
 @api
 def add_tag(subject):
     if subject not in ALLOW_TAG_SUBJECT:
         return  'not found', 404
 
     form = request.form
-    name = form['tagname']
+    name = form['name']
     createuin = form['createuin']
     parent = form.get('parent', 'root')
 
@@ -25,7 +28,7 @@ def add_tag(subject):
     else:
         scope = form.get('scope', 'pr') 
     
-    tag = Tag(name=name, parent=parent,createUIN=createuin, scope=scope, subject = type)
+    tag = Tag(name=name, parent=parent,createuin=createuin, scope=scope, subject = subject)
     #tag['_id'] = ObjectId()
     tag.save()
     return tag.to_api(hide_id=False),0

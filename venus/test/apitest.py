@@ -5,9 +5,15 @@ from venus import utils
 class TagApiTest(VenusTestCase):
     
     def test_list_all_feedgroup(self):
-        recieve_data = self.app.get('/api/v1/feedgroup')
+        recieve_data = self.app.get('/api/v1/feedtags')
         json_data = json.loads(recieve_data.data.decode('utf-8'))
         assert json_data['body']['total'] == 3
+        
+    def test_post(self):
+        recieve_data = self.app.post('/api/v1/feedtags', data=dict(name='测试TAG1', createuin=102, scope='pr', subject='scenic', parent='root'))
+        json_data = json.loads(recieve_data.data.decode('utf-8'))
+        assert json_data['body']['_id'] is not None
+        
             
 class ScenicApiTest(VenusTestCase):
     def test_add_scenic(self):

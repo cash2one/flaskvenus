@@ -5,7 +5,7 @@
 import string
 import random
 import hashlib, time
-from .paginator import Paginator, EmptyPage, InvalidPage
+from flask_mongoengine import Pagination
 
 def random_key():
     return ''.join([random.choice(string.letters) for i in xrange(48)])
@@ -27,13 +27,9 @@ def hashPassword(password):
 
 
 def paginate_list(content_list, from_index=0, per_page=10):
-    paginator = Paginator(content_list, per_page)
-
-    try:
-        content_list = paginator.page(from_index/per_page + 1)
-    except (EmptyPage, InvalidPage):
-        content_list = paginator.page(paginator.num_pages)
-
+    paginator = Pagination(content_list, from_index/per_page + 1, per_page)
+    content_list = paginator.items
+    
     return {'totalCount': paginator.count, 'startIndex': content_list.start_index() - 1,
              'list': [item for item in content_list]}
     

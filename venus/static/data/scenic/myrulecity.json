@@ -9,8 +9,8 @@
   "others_imgurl" :  ["http://120.24.208.105/venus/api/v1/image/scenic5",  
   					"http://120.24.208.105/venus/api/v1/image/scenic6", 
   					"http://120.24.208.105/venus/api/v1/image/scenic7"],
-  "comment_list" : [{"create_user_id" : 102, "create_time" : 1427351991000, "content":"市区过去好远,观澜那边正在修路,好堵啊!!"},
-  					{"create_user_id" : 103, "create_time" : 1427352991000, "content":"风景不错,里面相对比较复古, 但又不是很古老那种, 有点人文气自息"}
+  "comment_list" : [{"create_user_id" : 102, "create_time" : "2015-04-17 13:30", "content":"市区过去好远,观澜那边正在修路,好堵啊!!"},
+  					{"create_user_id" : 103, "create_time" : "2015-04-17 13:30", "content":"风景不错,里面相对比较复古, 但又不是很古老那种, 有点人文气自息"}
   				   ]
   					
 }

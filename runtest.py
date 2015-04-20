@@ -1,7 +1,7 @@
 import os, json
 import unittest
 from venus import app, db, tagapi
-from venus.test import *
+from venus.test import apitest
 import dbcreate
 
         
@@ -17,7 +17,11 @@ if __name__ == '__main__':
     db.init_app(app)
     dbcreate.init_scenic_feed()
     dbcreate.init_distraction_feed()
-    unittest.main(module='venus.test')
+    #suite = unittest.TestSuite()  
+    #suite.addTest(apitest.TagApiTest('test_list_all_feedgroup'))  
+    suite =  unittest.TestLoader().loadTestsFromTestCase(apitest.TagApiTest)  
+    unittest.TextTestRunner(verbosity=2).run(suite) 
+    #unittest.main(module='venus.test')
     #test_list_all_feedgroup()
     db.connection.disconnect()
 

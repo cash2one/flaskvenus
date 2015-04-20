@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from flask import request
+from werkzeug.security import generate_password_hash,check_password_hash
 from mongoengine.errors import DoesNotExist
-from .models import User
-from . import app, db, idmanager,utils, settings
-from .apis import api, APIError, APIValueError
+from venus.models import User
+from venus import app, db, idmanager,utils, settings
+from venus.apis import api, APIError, APIValueError
 
 @app.route('/api/v1/rest/users',  methods=['POST'])
 @api
@@ -29,7 +30,7 @@ def register_user():
         raise APIError(-1, 'phone', 'phone is already in use.')
     
     uin = idmanager.generateUIN()
-    user = User(uin=uin, name=name, phoneNO=phone, _password=password, avatarId = avatarurl)
+    user = User(uin=uin, name=name, phoneNO=phone, _password=generate_password_hash(password), avatarId = avatarurl)
     user.save()
     return user.to_api(), 201
 

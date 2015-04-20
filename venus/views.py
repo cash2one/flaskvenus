@@ -1,15 +1,18 @@
 
 import re, os, base64, hashlib, logging, time, base64,json
-from flask import request, render_template, make_response, redirect, jsonify
-#from flask.ext.httpauth import HTTPBasicAuth
-
-from . import app, db
-from . import idmanager
-from .models import User
-from .apis import api, APIError, APIValueError
+from flask import request,g, render_template, make_response, redirect, jsonify, session
 import flask_wtf
+from werkzeug.security import generate_password_hash,check_password_hash
+
 from bson import json_util
 from mongoengine.errors import DoesNotExist
+#from flask.ext.httpauth import HTTPBasicAuth
+
+from venus import app, db
+from venus import idmanager
+from venus.models import User
+from venus.apis import api, APIError, APIValueError
+
 
 _RE_MD5 = re.compile(r'^[0-9a-f]{32}$')
 _COOKIE_NAME = 'venus'
@@ -34,6 +37,7 @@ def login():
 def logout():
     response = make_response(render_template('index.html', logged_in = False))
     response.delete_cookie(_COOKIE_NAME)
+    session.pop('uin', None)
     return redirect(url_for('index'))    
 
     
@@ -50,7 +54,7 @@ def authenticate():
     except DoesNotExist as e:
         raise APIError(-1, 'uid', 'Invalid username.')
         
-    if user._password != password:
+    if not check_password_hash(user._password, password):
         raise APIError(-1, 'password', 'Invalid password.')
 
     max_age = 604800
@@ -59,14 +63,20 @@ def authenticate():
     #response.set_cookie(_COOKIE_NAME, cookie, max_age=max_age)
 
     logging.debug(user.name + 'login success!!')
-    
+    session['uin']=user.uin
     return user.to_api(), 0
 
 
 def authenticate_user_token(nick, token):
     pass
 
-
+@app.before_request
+def before_request():
+    g.user = None
+    if 'uin' in session:
+        g.usr= User.objects.get(uin=uin)
+    
+    
 @app.errorhandler(404)
 @api
 def not_found(error):

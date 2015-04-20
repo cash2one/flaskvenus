@@ -1,5 +1,7 @@
 DEBUG = True
 
+#这是一个危险的操作!!!!!!!!
+WTF_CSRF_ENABLED = False
 SECRET_KEY = 'sdfsdf82347$$%$%$%$&fsdfs!!ASx+__WEBB$'
 
 ADMIN=[101, 102,103]
@@ -16,3 +18,6 @@ MONGODB_SETTINGS = {'DB': "wlkqnuQHpoaIYnLikclm",
                      'PASSWORD': 'LzvELOKlwM66OGZpdApUYtrTA7FopDgj',
                      'HOST': '120.24.208.105',
                      'PORT': 27017}
+
+QQ_APP_ID = '101187283'
+QQ_APP_KEY = '993983549da49e384d03adfead8b2489'

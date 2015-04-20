@@ -4,7 +4,7 @@
 __author__ = 'tangwh'
 
 import re, json, logging, functools
-from flask import make_response
+from flask import make_response, jsonify
 
 class APIError(Exception):
     '''
@@ -43,16 +43,16 @@ def api(func):
     def _wrapper(*args, **kw):
         try:
             data, code = func(*args, **kw);
-            r = json.dumps(dict(statecode=code, stateDescription='success', body=data))
+            body= dict(statecode=code, stateDescription='success', body=data)
         except APIError as e:
-            r = json.dumps(dict(statecode=e.error, stateDescription=e.message, body=e.payload))
+            body = dict(statecode=e.error, stateDescription=e.message, body=e.payload)
         except ValueError as e:
-            r = json.dumps(dict(statecode=403, stateDescription='program error!'))
+            body = dict(statecode=403, stateDescription='program error!')
         except Exception as e:
             logging.exception(e)
-            r = json.dumps(dict(statecode=403, stateDescription='internalerror'))
-        response = make_response(r) 
-        response.headers.extend({'Content-Type': 'application/json'})  
+            body = dict(statecode=403, stateDescription='internalerror')
+        #ensure_ascii=False能输出中文字串,不然中文字串件会以"\u535a\u5ba2\u56ed"形式输出
+        response = jsonify(body, ensure_ascii=False)
         return response
     
     return _wrapper

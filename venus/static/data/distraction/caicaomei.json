@@ -9,7 +9,7 @@
   					"http://120.24.208.105/venus/api/v1/image/distraction5"], 
   "dstLoc" :  {"address" :   "深圳市龙岗区中大田园农庄", "name": "中大田园农庄", "location": [113.9, 22.5]},
   "max_member_count" : 20,
-  "comment_list" : [{"create_user_id" : 102, "create_time" : 1427351991000, "content":"走到梅林水库的话,大概要5个小时"},
-  					{"create_user_id" : 103, "create_time" : 1427352991000, "content":"山太矮了,没有挑战性"}
+  "comment_list" : [{"create_user_id" : 102, "create_time" : "2015-04-17 13:30", "content":"走到梅林水库的话,大概要5个小时"},
+  					{"create_user_id" : 103, "create_time" : "2015-04-17 13:30", "content":"山太矮了,没有挑战性"}
   				   ]
 }

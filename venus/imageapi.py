@@ -1,10 +1,8 @@
-import time, datetime,json
 from os import path
 from flask import request,url_for, make_response, send_file
-from werkzeug import secure_filename
 from bson.objectid import ObjectId
 
-from . import app
+from venus import app
 from .apis import api, APIError, APIValueError
 from flask.helpers import send_from_directory
 
@@ -45,6 +43,11 @@ def upload_image():
 @app.route('/api/v1/image/<imageid>',  methods=['get'])
 def get_image(imageid):
         upload_path = path.join(app.root_path, app.config['UPLOAD_FOLDER'])
+        #利用nginx来读取文件,减小app压力
+        #resp = make_response()
+        #resp.headers['Content-Type']= 'image/png'
+        #resp.headers['X-Accel-Redirect']= path.join(app.root_path, imageid + '.png')
+        
         return send_from_directory(upload_path, imageid + '.png')
 
     

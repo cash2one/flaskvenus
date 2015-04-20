@@ -75,6 +75,7 @@ def get_nearby_distraction():
     cmd['maxDistance'] = distance/EARTH_RADIUS_METERS
     cmd['distanceMultiplier'] =EARTH_RADIUS_METERS 
     cmd['spherical'] = True
+    #cmd_rs = Distraction.objects(__raw__=cmd.to_dict())
     dacol = Distraction.objects._collection
     cmd_rs = dacol.database.command(cmd)
     results = cmd_rs['results']
