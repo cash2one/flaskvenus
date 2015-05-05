@@ -19,7 +19,7 @@ DB in remote host
 MONGODB_SETTINGS = {'DB': "wlkqnuQHpoaIYnLikclm",
                      'USERNAME': '4c5OS5cGGjmPr4ERO1gcByk8',
                      'PASSWORD': 'LzvELOKlwM66OGZpdApUYtrTA7FopDgj',
-                     'HOST': '10.170.1.11',
+                     'HOST': '127.0.0.1',
                      'PORT': 27017}
 
 QQ_APP_ID = '101187283'
