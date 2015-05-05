@@ -2,14 +2,15 @@
   "title":        "文艺免费好地方,观澜版画村",
   "summary":      "客家人居住的古村落", 
   "description":  "这是中国新兴木刻运动陈烟桥先生的故里,典型的客家人居住的古村落",
-  "create_user_id" : 101,
+  "created_by" : 101,
+  "create_time" : "2015-04-17 13:30",
   "like_num" :    1032,
   "location" : {"address" :   "深圳市龙岗区观澜版画村", "name": "观澜版画村", "location": [113.9, 22.5]},
-  "main_imgurl":     "http://120.24.208.105/venus/api/v1/image/scenic1",
-  "others_imgurl" :  ["http://120.24.208.105/venus/api/v1/image/scenic2",  
-  					"http://120.24.208.105/venus/api/v1/image/scenic3"],
-  "comment_list" : [{"create_user_id" : 102, "create_time" : "2015-04-17 13:30", "content":"市区过去好远,观澜那边正在修路,好堵啊!!"},
-  					{"create_user_id" : 103, "create_time" : "2015-04-17 13:30", "content":"风景不错,里面相对比较复古, 但又不是很古老那种, 有点人文气自息"}
+  "imgurl":     "http://www.funnycity.cn/venus/api/v1/image/scenic1",
+  "others_imgurl" :  ["http://www.funnycity.cn/venus/api/v1/image/scenic2",  
+  					"http://www.funnycity.cn/venus/api/v1/image/scenic3"],
+  "comment_list" : [{"created_by" : 102, "create_time" : "2015-04-17 13:30", "content":"市区过去好远,观澜那边正在修路,好堵啊!!"},
+  					{"created_by" : 103, "create_time" : "2015-04-17 13:30", "content":"风景不错,里面相对比较复古, 但又不是很古老那种, 有点人文气自息"}
   				   ]
   					
 }

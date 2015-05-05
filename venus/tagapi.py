@@ -9,7 +9,7 @@ from .apis import api, APIError, APIValueError
 from bson import ObjectId
 from flask.helpers import url_for
 
-ALLOW_TAG_SUBJECT =  set(['topic', 'scenic', 'distraction', 'user'])
+ALLOW_TAG_SUBJECT =  set(['album', 'scenic', 'distraction', 'user'])
         
         
 @app.route('/api/v1/sec/tags/<subject>',  methods=['POST'])                          
@@ -59,8 +59,8 @@ def list_all_feedgroup():
     tags = Tag.objects(scope='of', subject = 'distraction')
     da_group['value'] = [tag.to_api(False) for tag in tags]
     
-    topic_group = dict(name='专题', moreurl=url_for('add_tag', subject='topic'))
-    tags = Tag.objects(scope='of',  subject = 'topic')
+    topic_group = dict(name='专题', moreurl=url_for('add_tag', subject='album'))
+    tags = Tag.objects(scope='of',  subject = 'album')
     topic_group['value'] = [tag.to_api(False) for tag in tags]
     
     feedgroup=[scenic_group, da_group, topic_group]

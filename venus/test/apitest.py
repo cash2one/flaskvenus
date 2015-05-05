@@ -10,7 +10,7 @@ class TagApiTest(VenusTestCase):
         assert json_data['body']['total'] == 3
         
     def test_post(self):
-        recieve_data = self.app.post('/api/v1/feedtags', data=dict(name='测试TAG1', createuin=102, scope='pr', subject='scenic', parent='root'))
+        recieve_data = self.app.post('/api/v1/feedtags', data=dict(name='测试TAG1', created_by=102, scope='pr', subject='scenic'))
         json_data = json.loads(recieve_data.data.decode('utf-8'))
         assert json_data['body']['_id'] is not None
         

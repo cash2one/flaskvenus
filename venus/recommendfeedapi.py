@@ -1,7 +1,7 @@
 import time, datetime,json
 from flask import request
 from mongoengine.errors import DoesNotExist
-from .models import Distraction, User, RecommendFeed, Scenic, Distraction, Topic
+from .models import Distraction, User, RecommendFeed, Scenic, Distraction, Album
 from . import app, db,utils
 from .apis import api, APIError, APIValueError
 
@@ -41,28 +41,19 @@ def get_all_recommend_feed():
     feedlist=[]
     try:
         list = RecommendFeed.objects.all()
-        
+        feedable = None
         for recommend in list :
             if 'distraction' == recommend.subject:
-                da = Distraction.objects.with_id(recommend.feedid)
-                if da is None:
-                    continue
-                if da.img_url_list :
-                    imgurl=da.img_url_list[0] 
-                else:
-                    imgurl=None 
-                feedlist.append( Feed(da.id, da.title, da.description, imgurl, 'distraction').to_api())
+                feedable = Distraction.objects.with_id(recommend.feedid)
             elif 'scenic' == recommend.subject:
-                scenic = Scenic.objects.get(id=recommend.feedid)
-                if scenic is None:
-                    continue
-                feedlist.append(Feed(scenic.id, scenic.title, scenic.summary, scenic.main_imgurl, 'scenic').to_api())
-            elif 'topic' == recommend.subject:
-                topic = Topic.objects.with_id(recommend.feedid)
-                if topic is None:
-                    continue
-                feedlist.append(Feed(topic.id, topic.title, topic.summary, topic.imgurl, 'topic').to_api())
+                feedable = Scenic.objects.with_id(recommend.feedid)
+            elif 'album' == recommend.subject:
+                feedable = Album.objects.with_id(recommend.feedid)
                 
+            if feedable:  
+                feedable = feedable.to_api(False)
+                feedable['subject']=recommend.subject  
+                feedlist.append( feedable)   
     except DoesNotExist as e:
         pass
     

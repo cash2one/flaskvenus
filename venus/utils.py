@@ -27,10 +27,10 @@ def hashPassword(password):
 
 
 def paginate_list(content_list, from_index=0, per_page=10):
-    paginator = Pagination(content_list, from_index/per_page + 1, per_page)
+    paginator = Pagination(content_list, int(from_index/per_page + 1), per_page)
     content_list = paginator.items
     
-    return {'totalCount': paginator.count, 'startIndex': content_list.start_index() - 1,
+    return {'totalCount': paginator.total, 'startIndex': (paginator.page - 1) * paginator.per_page,
              'list': [item for item in content_list]}
     
 def timestamp_ms(time_str=None):

@@ -6,7 +6,12 @@ from mongoengine.fields import FloatField
 from bson import json_util
 from . import db as mongodb
 from . import utils
+from random import choice
+from pip._vendor.pkg_resources import require
 
+    
+    
+        
 class ApiDocument(Document):
     meta = {'allow_inheritance':True, 'abstract': True}
     
@@ -26,8 +31,8 @@ class User(Document):
     ADMIN = 300
     
     uin = LongField(primary_key=True, unique=True,  required=True)
-    name = StringField(max_length=50)
     phoneNO = StringField(max_length=50, unique=True)
+    name  = StringField(max_length=50) 
     _password = StringField(db_field='password', max_length=200)
     role = IntField(choices=(MEMBER, MODERATOR, ADMIN), default=MEMBER)
     avatarId = StringField(max_length=256)
@@ -50,16 +55,87 @@ class Profile(ApiDocument):
     avatar_id = StringField(max_length=50)
     last_login_at = DateTimeField()
     current_login_at = DateTimeField()
-    like_das = ListField(StringField(max_length=32))
-    collect_das = ListField(StringField(max_length=32))
-    like_scs = ListField(StringField(max_length=32))
-    collect_scs = ListField(StringField(max_length=32))
+    follower_num = IntField()
+    like_das = IntField()
+    favorite_das = IntField()
+    like_scs = IntField()
+    favorite_scs = IntField()
         
 class Presence(Document):
     uin = LongField(unique=True, required=True)
     updated_at =  DateTimeField(default=datetime.datetime.now)
+    city = StringField(max_length=10)
     auth_token = StringField(max_length=50)
+
+def Relation(type1, type2):
+    class RelationCls(ApiDocument):
+        _type1=type1
+        _type2=type2
     
+    return RelationCls
+
+
+class Followable(object):
+    name  = StringField(max_length=50, unique=True,required=True) 
+    created_by = ReferenceField(User, required=True)
+    create_time = DateTimeField(default=datetime.datetime.now)
+    follower_num = IntField()
+    
+    def follow(self):
+        pass
+        
+class Feedable(object):
+    title = StringField(max_length=20)
+    summary = StringField(max_length=50)
+    topic_id = StringField(max_length=50)
+    tag_list = ListField(StringField(max_length=30))
+    imgurl  = StringField(max_length=256)
+    like_num = IntField()
+    created_by = ReferenceField(User)
+    create_time = DateTimeField(default=datetime.datetime.now)
+    
+    def to_api(self):
+        return self.__dict__    
+    
+class Followship(Relation(User, Followable)):
+    target_type = StringField(required=True)
+
+class Notification(ApiDocument):
+    LIKED = 'L'
+    COMMENTED = 'C'
+    FOLLOWED = 'F'
+
+    NOTIFICATION_TYPES = (
+        (LIKED, 'Liked'),
+        (COMMENTED, 'Commented'),
+        (FOLLOWED, 'Follewed'),
+    )
+    
+    from_user = ReferenceField(User)
+    to_user = ReferenceField(User)
+    date = DateTimeField(default=datetime.datetime.now)
+    summary = StringField(max_length=50)
+    detail_url =  StringField(max_length=256)
+    notification_type = StringField(max_length=1, choices=NOTIFICATION_TYPES)
+    is_read = BooleanField(default=False)
+    
+class FeedAction(Relation(User, Feedable)):  
+    FAVORITE = 'F'
+    LIKE = 'L'
+    UP_VOTE = 'U'
+    DOWN_VOTE = 'D'
+    ACTION_TYPES = (
+        (FAVORITE, 'Favorite'),
+        (LIKE, 'Like'),
+        (UP_VOTE, 'Up Vote'),
+        (DOWN_VOTE, 'Down Vote'),
+    )
+    
+    user = ReferenceField(User)
+    action_type = StringField(max_length=1, choices=ACTION_TYPES)
+    date = DateTimeField(default=datetime.datetime.now)
+    feed = StringField(max_length=50)
+     
 #用户和用户之间的关系
 class UURelation(Document):
     owner = LongField(required=True)
@@ -74,29 +150,35 @@ class USDRelation(Document):
     
 #tag和Scenic, distraction的关系
 class TSDRelation(Document):
-    owner = LongField(required=True)
+    tag = StringField(required=True)
     target = StringField(required=True)
     type = IntField()
     
 #场所和活动之间的关系    
 class SDRelation(Document):
-    owner = LongField(required=True)
-    target = StringField(required=True)
+    scenic_id = StringField(required=True)
+    da_id = StringField(required=True)
     type = IntField()
 
     
 #当 Tag.scope为public时,即变成type
-class Tag(ApiDocument):
+class Tag(Followable, ApiDocument):
     #_id = StringField(unique=True,required=True)
-    name = StringField(max_length=20, unique=True,required=True) 
-    createuin = LongField(required = True)
-    parent = StringField(required=True, default='root')
+    parent = ReferenceField('self', required=False, default=None, reverse_delete_rule=mongodb.DENY)
     #offical指经公司编辑认同后由public提升而来的
-    scope = StringField(default = 'pu', max_length=2) #"choice (offical, public,private, friend)
-    subject =  StringField(default = 'scenic', max_length=20) #choice('topic', 'scenic','distraction', 'user')
-    pic_url  = StringField(max_length=256)
+    scope = StringField(default = 'pu', max_length=2) #"choices (offical, public,private, friend)
+    subject =  StringField(default = 'scenic', max_length=20) #choices ('album', 'scenic','distraction', 'user')
+    feed_num = IntField()
+    
+    def get_children(self, **kwargs):
+        """return direct children 1 level depth"""
+        return self.__class__.objects(parent=self, **kwargs)
+    
     meta = {'collection': 'tag'}
-        
+
+class Topic(Followable, ApiDocument):
+    #_id = StringField(unique=True,required=True)
+    feed_num = IntField()     
                        
 class DAType(Document):
     _typeId = IntField(db_field='typeId',unique=True, required=True)
@@ -128,9 +210,9 @@ class DAType(Document):
         
     def to_api(self, hide_id = True):
         output = {}
-        output['typeId'] = self['_typeId']
-        output['mainTypeName'] = 'main'
-        output['subTypeName'] = self['_typeName']
+        output['type_id'] = self['_typeId']
+        output['main_type_name'] = 'main'
+        output['sub_type_name'] = self['_typeName']
         if not hide_id:
             output['_id'] = str(self['_id'])
         return output
@@ -148,28 +230,19 @@ class Poi(EmbeddedDocument):
     #latitude = FloatField()
 
 class Comment(EmbeddedDocument):
-    create_user_id = LongField( required=True)
+    created_by = ReferenceField(User, required=True)
     create_time = DateTimeField(default=datetime.datetime.now)
     content = StringField(max_length=140)
     deleted = BooleanField()
     
-    @property
-    def creater(self):
-        return User.objects.get(uin=create_user_id).to_api()
-
-class Scenic(ApiDocument):
-    title = StringField(max_length=20)
-    summary = StringField(max_length=50)
-    create_user_id = LongField( required=True)
-    create_time = DateTimeField()
+    
+class Scenic(ApiDocument, Feedable):
     location = EmbeddedDocumentField(Poi)
     description = StringField(max_length=500, required=True)
-    tag_list = ListField(StringField(max_length=30))
     da_list = ListField(StringField(max_length=30))
     like_num = IntField()
     #TODO comment num is limit , becaus document is limit 
     comment_list = ListField(EmbeddedDocumentField(Comment))
-    main_imgurl  = StringField(max_length=256, )
     others_imgurl  = ListField(StringField(max_length=256))
     prop_ex = DictField()
     meta = {
@@ -182,20 +255,12 @@ class Scenic(ApiDocument):
     
     
         
-class Distraction(ApiDocument):
-    title = StringField(max_length=20)
-    summary = StringField(max_length=50)
-    create_time = LongField(db_field='createTime', default=utils.timestamp_ms)
-    start_time = LongField(db_field='startTime', required=True)
-    #creatUser = ReferenceField(User)
-    create_user_id = LongField(db_field='createUserId', required=True)
-    description = StringField(max_length=500, required=True)
-    origin_loc = EmbeddedDocumentField(Poi, db_field='originLoc')
-    dst_loc = EmbeddedDocumentField(Poi, db_field='dstLoc')
+class Distraction(ApiDocument, Feedable):
+    start_time = DateTimeField(default=datetime.datetime.now, required=True)
+    origin_loc = EmbeddedDocumentField(Poi)
+    dst_loc = EmbeddedDocumentField(Poi)
     group_id = StringField()
-    tag_list = ListField(StringField(max_length=30))
     img_url_list = ListField(StringField(max_length = 256))
-    like_num = IntField(db_field='likeNum')
     pay_type = IntField()
     max_member_count = IntField()
     min_member_count = IntField() 
@@ -208,17 +273,14 @@ class Distraction(ApiDocument):
     'ordering': ['create_time']} 
 
         
-class Topic(ApiDocument):
-    title = StringField(max_length=20)
-    summary = StringField(max_length=50)
-    imgurl = StringField(max_length=256)
-    create_time = LongField(db_field='createTime', default=utils.timestamp_ms)
+class Album( ApiDocument, Feedable):
+    pass
 
 class RecommendFeed(ApiDocument):
     feedid=StringField(max_length=32)
     _ttl_day =IntField(db_field = 'ttl_day', default=5)
-    subject =  StringField(default = 'scenic', max_length=20) #choice('topic', 'scenic','distraction')
-    create_time = LongField(db_field='createTime', default=utils.timestamp_ms)
+    subject =  StringField(default = 'scenic', max_length=20) #choice('album', 'scenic','distraction')
+    create_time = DateTimeField(default=datetime.datetime.now, required=True)
         
     
 class IDCounter(DynamicDocument):

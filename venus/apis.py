@@ -3,9 +3,20 @@
 
 __author__ = 'tangwh'
 
-import re, json, logging, functools
-from flask import make_response, jsonify
+import re,logging, functools
+from flask import make_response, json
+from flask.globals import current_app, request
 
+#仿照josn.jsonity,只是在content_type 加入了charset=utf8
+def jsonify(*args, **kwargs):
+    indent = None
+    if current_app.config['JSONIFY_PRETTYPRINT_REGULAR'] \
+        and not request.is_xhr:
+        indent = 2
+    return current_app.response_class(json.dumps(dict(*args, **kwargs),
+        indent=indent),
+        mimetype='application/json', content_type='application/json; charset=utf8')
+    
 class APIError(Exception):
     '''
     the base APIError which contains error(required), data(optional) and message(optional).
@@ -51,8 +62,8 @@ def api(func):
         except Exception as e:
             logging.exception(e)
             body = dict(statecode=403, stateDescription='internalerror')
-        #ensure_ascii=False能输出中文字串,不然中文字串件会以"\u535a\u5ba2\u56ed"形式输出
-        response = jsonify(body, ensure_ascii=False)
+            
+        response = jsonify(body)
         return response
     
     return _wrapper

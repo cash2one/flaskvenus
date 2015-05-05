@@ -16,8 +16,7 @@ def add_scenic():
     scenic.title = form.get('title', None)
     scenic.summary = form.get('summary', None)
     scenic.description = form.get('description', None)
-    scenic.create_user_id = int(form['createuser'])
-    scenic.create_time = int(utils.timestamp_ms())
+    scenic.create_by = User.objects.get(uin= int(form['createuser']))
     url_str = form.get('imgurllist', None)
     if url_str:
         urllist = url_str.split(',')
@@ -31,14 +30,14 @@ def add_scenic():
     scenic.save()
     
     recommend = int(form.get('recommend', '0'))
-    if recommend == 1 and userapi.is_admin(scenic.create_user_id):
+    if recommend == 1 and scenic.create_by.is_admin():
         feed = RecommendFeed(feedid=str(scenic['id']),subject='scenic')
         feed.save()
     return scenic.to_api(False), 0
 
 def append_distance(scenic, distance):
     scenic['_id'] = str(scenic['_id'])
-    scenic['farawayMeters'] = round(distance)
+    scenic['faraway_meters'] = round(distance)
     return scenic 
             
 @app.route('/api/v1/sec/scenics',  methods=['get'])

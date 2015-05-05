@@ -20,11 +20,11 @@ def add_distraction():
     da.create_user_id = int(form['createuser'])
     da.start_time = utils.timestamp_ms(form['starttime'])
     da.create_time = int(utils.timestamp_ms())
-    url_list = form.get('imgurllist', None);
+    url_list = form.get('img_url_list', None);
     if url_list :
         da.img_url_list = url_list.split(',')
         
-    tag_list_str = form.get('tagIdList', None)
+    tag_list_str = form.get('tag_id_list', None)
     if tag_list_str :
         da.tag_list = tag_list_str.split(',')
         
@@ -41,23 +41,14 @@ def add_distraction():
 
 def append_distance(da, distance):
     da['_id'] = str(da['_id'])
-    da['farawayMeters'] = round(distance)
- 
-    fill_user_info(da)
+    da['faraway_meters'] = round(distance)
+
     img_url_list = da.get('img_url_list')
     if img_url_list :
         da['imgurl'] = img_url_list[0]
         del da['img_url_list']
     return da
 
-def fill_user_info(da):
-    uin = da['createUserId']
-    del da['createUserId']
-    user = User.objects.get(uin=uin)
-    da['createUserInfo'] = {'uin' : uin,
-                        'name' : user.name,
-                        'headerImgUrl' : user.avatarId,
-                        'sexType': user.sexType}
             
 @app.route('/api/v1/sec/distractions',  methods=['get'])
 @api
@@ -95,8 +86,6 @@ def get_distraction(feedid):
         raise NotFound
     
     result = distraction.to_api()
-    fill_user_info(result)
-    
     result['tag_list'] = []
     for tagid in distraction.tag_list:
         tag = Tag.objects.with_id(tagid)

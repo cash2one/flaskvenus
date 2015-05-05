@@ -6,11 +6,11 @@ from flask.ext.restful import Resource, reqparse
 from flask_mongoengine.wtf.orm import model_form, ModelConverter, converts
 from mongoengine.errors import DoesNotExist, InvalidQueryError
 
-from venus.models import Tag
+from venus.models import Tag, User
 from venus import app, restapi
 from venus.resource.ApiResource import ApiResource
 
-ALLOW_TAG_SUBJECT =  set(['topic', 'scenic', 'distraction', 'user'])
+ALLOW_TAG_SUBJECT =  set(['album', 'scenic', 'distraction', 'user'])
 
 class MyModelConverter(ModelConverter):
     @converts('LongField')
@@ -37,10 +37,10 @@ class FeedTagListRes(ApiResource):
         tags = Tag.objects(scope='of', subject = 'distraction')
         da_group['value'] = [tag.to_api(False) for tag in tags]
         
-        topic_group = dict(name='专题', moreurl=url_for('tags'))
-        tags = Tag.objects(scope='of',  subject = 'topic')
-        topic_group['value'] = [tag.to_api(False) for tag in tags]
-        feedgroup=[scenic_group, da_group, topic_group] 
+        album_group = dict(name='专题', moreurl=url_for('tags'))
+        tags = Tag.objects(scope='of',  subject = 'album')
+        album_group['value'] = [tag.to_api(False) for tag in tags]
+        feedgroup=[scenic_group, da_group, album_group] 
         return {'total':len(feedgroup), 'list': feedgroup}       
         
     def get(self):
@@ -63,11 +63,11 @@ class FeedTagListRes(ApiResource):
         args = self.reqparse.parse_args()  
         #field_args={'name':'tagname', 'createUIN':'createuin'}
         tag_form_class = model_form(Tag, 
-                                    only=['createuin', 'name', 'parent', 'scope',  'subject'], 
+                                    only=['created_by', 'name', 'parent', 'scope',  'subject'], 
                                     converter=MyModelConverter())
-        tag_form = tag_form_class(request.form, **dict(parent='root', scope='pr'))
+        tag_form = tag_form_class(request.form, **dict( scope='pr'))
         if tag_form.validate():
-            tag = Tag(parent='root')
+            tag = Tag()
             tag_form.populate_obj(tag)
             tag.save()
             return tag.to_api(hide_id=False)

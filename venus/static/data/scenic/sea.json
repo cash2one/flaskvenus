@@ -2,15 +2,15 @@
   "title":        "深圳绝美海岸线,大鹏半岛",
   "summary":      "大鹏半岛,深圳最后“桃花源”", 
   "description":  "大鹏半岛，三面环海，东临大亚湾，与惠州接壤，西抱大鹏湾，遥望香港新界，陆域面积294.18平方公里，海岸线长133.22公里，森林覆盖率76%，拥有独特的山海风光、旅游资源、丰富的人文资源、明显的区位优势和巨大的发展潜力。沿岸分布着大大小小十几个沙滩，如下沙、西冲、东冲、桔钓沙等。这些沙滩沙质松软，属中细沙。由于生态资源得到严格保护，大鹏半岛成为深圳市目前面积最大、保存最为完好的生态乐土",
-  "create_user_id" : 102,
+  "created_by" : 103,
   "like_num" :    1032,
   "location" : {"address" :   "深圳市龙岗区大鹏镇", "name": "大鹏半岛", "location": [113.9, 22.5]},
-  "main_imgurl":     "http://120.24.208.105/venus/api/v1/image/scenic9",
-  "others_imgurl" :  ["http://120.24.208.105/venus/api/v1/image/scenic10",  
-  					"http://120.24.208.105/venus/api/v1/image/scenic11", 
-  					"http://120.24.208.105/venus/api/v1/image/scenic12"],
-  "comment_list" : [{"create_user_id" : 102, "create_time" : "2015-04-17 13:30", "content":"市区过去好远,观澜那边正在修路,好堵啊!!"},
-  					{"create_user_id" : 103, "create_time" : "2015-04-17 13:30", "content":"风景的确不错,但最后的桃花源太过了吧!!"}
+  "imgurl":     "http://www.funnycity.cn/venus/api/v1/image/scenic9",
+  "others_imgurl" :  ["http://www.funnycity.cn/venus/api/v1/image/scenic10",  
+  					"http://www.funnycity.cn/venus/api/v1/image/scenic11", 
+  					"http://www.funnycity.cn/venus/api/v1/image/scenic12"],
+  "comment_list" : [{"created_by" : 102, "create_time" : "2015-04-17 13:30", "content":"市区过去好远,观澜那边正在修路,好堵啊!!"},
+  					{"created_by" : 103, "create_time" : "2015-04-17 13:30", "content":"风景的确不错,但最后的桃花源太过了吧!!"}
   				   ]
   					
 }

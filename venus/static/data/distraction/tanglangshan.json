@@ -2,14 +2,15 @@
   "title":        "登塘朗山",
   "summary":      "一个冬天脂肪堆积,身上的肉要减了", 
   "description":  "塘朗山郊野公园有较为丰富的林木景观资源和自然景观，森林覆盖率约87%，森林植被以阔叶林为主。公园植物种类丰富，自然植被和人工植被共存，珍稀保护植物较多。其中属国家重点保护的植物共计7科7属7种，占广东省国家重点保护野生植物的11%，较常见的有苏铁蕨、土沉香、金毛狗等，其中列入珍惜濒危的植物有4科5属5种，如桫椤、土沉香、白桂木等",
-  "create_user_id" : 102,
-  "start_time" :  1427352991000,
+  "created_by" : 103,
+  "start_time" :  "2015-04-17 13:30",
   "like_num"   : 6324,
-  "img_url_list" :  ["http://120.24.208.105/venus/api/v1/image/distraction3",  
-  					"http://120.24.208.105/venus/api/v1/image/distraction4"], 
+  "imgurl"     : "http://www.funnycity.cn/venus/api/v1/image/distraction3",
+  "img_url_list" :  ["http://www.funnycity.cn/venus/api/v1/image/distraction3",  
+  					"http://www.funnycity.cn/venus/api/v1/image/distraction4"], 
   "dstLoc" :  {"address" :   "深圳市南山区桃源村", "name": "塘朗山", "location": [113.9, 22.5]},
   "max_member_count" : 20,
-  "comment_list" : [{"create_user_id" : 102, "create_time" : "2015-04-17 13:30", "content":"走到梅林水库的话,大概要5个小时"},
-  					{"create_user_id" : 103, "create_time" : "2015-04-17 13:30", "content":"山太矮了,没有挑战性"}
+  "comment_list" : [{"created_by" : 102, "create_time" : "2015-04-17 13:30", "content":"走到梅林水库的话,大概要5个小时"},
+  					{"created_by" : 103, "create_time" : "2015-04-17 13:30", "content":"山太矮了,没有挑战性"}
   				   ]
 }
