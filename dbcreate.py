@@ -13,11 +13,11 @@ def init_user():
     uinCounter = IDCounter(key='uin', value='10000')
     uinCounter.save();
     
-    user = User(uin=101, name='admin101', phoneNO='13760480101', _password=generate_password_hash('123456'), role=User.ADMIN, avatarId='http://www.funnycity.cn/venus/api/v1/image/header1')
+    user = User(uin=101, name='admin101', phone='13760480101', _password=generate_password_hash('123456'), role=User.ADMIN, avatar_id='http://www.funnycity.cn/venus/api/v1/image/header1')
     user.save()
-    user = User(uin=102, name='admin102', phoneNO='13760480102', _password=generate_password_hash('123456'), role=User.ADMIN, avatarId='http://www.funnycity.cn/venus/api/v1/image/header2')
+    user = User(uin=102, name='admin102', phone='13760480102', _password=generate_password_hash('123456'), role=User.ADMIN, avatar_id='http://www.funnycity.cn/venus/api/v1/image/header2')
     user.save()
-    user = User(uin=103, name='admin103', phoneNO='13760480103', _password=generate_password_hash('123456'), role=User.ADMIN, avatarId='http://www.funnycity.cn/venus/api/v1/image/header3')
+    user = User(uin=103, name='admin103', phone='13760480103', _password=generate_password_hash('123456'), role=User.ADMIN, avatar_id='http://www.funnycity.cn/venus/api/v1/image/header3')
     user.save()
     
 def init_tag():
@@ -73,7 +73,7 @@ def init_scenic_feed():
         file = open(os.path.join(scenic_data_base, name), encoding='utf-8')
         scenic = Scenic.from_json(file.read())
         file.close()
-        scenic.tag_list=[str(tag.id) for tag in Tag.objects(scope='pu', subject='scenic')]
+        scenic.tag_list=[tag for tag in Tag.objects(scope='pu', subject='scenic')]
         scenic.save()
         recommend = RecommendFeed(feedid=str(scenic.id), subject='scenic')
         recommend.save()
@@ -85,7 +85,7 @@ def init_distraction_feed():
         file = open(os.path.join(da_data_base, name), encoding='utf-8')
         distraction = Distraction.from_json(file.read())
         file.close()
-        distraction.tag_list=[str(tag.id) for tag in Tag.objects(scope='pu', subject='distraction')]
+        distraction.tag_list=[tag for tag in Tag.objects(scope='pu', subject='distraction')]
         distraction.save()
         recommend = RecommendFeed(feedid=str(distraction.id), subject='distraction')
         recommend.save()
@@ -97,3 +97,8 @@ def create_all():
     init_tag()
     init_scenic_feed()
     init_distraction_feed()
+
+if __name__ == "__main__":
+    app.config.from_pyfile('settings_dev.py')
+    db.init_app(app)
+    create_all()

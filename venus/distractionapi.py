@@ -42,7 +42,7 @@ def add_distraction():
 def append_distance(da, distance):
     da['_id'] = str(da['_id'])
     da['faraway_meters'] = round(distance)
-
+    da['created_by'] = User.objects.with_id(int(da['created_by'])).to_api()
     img_url_list = da.get('img_url_list')
     if img_url_list :
         da['imgurl'] = img_url_list[0]

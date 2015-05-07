@@ -14,7 +14,13 @@ class TagApiTest(VenusTestCase):
         json_data = json.loads(recieve_data.data.decode('utf-8'))
         assert json_data['body']['_id'] is not None
         
-            
+class TagTimelineApiTest(VenusTestCase):
+    def test_get_scenics(self):
+        recieve_data = self.app.get('/api/v1/scenic/timeline/tag/情侣约会')
+        json_data = json.loads(recieve_data.data.decode('utf-8'))
+        assert json_data['body']['total'] > 0
+    
+                
 class ScenicApiTest(VenusTestCase):
     def test_add_scenic(self):
         file = open('venus/test/scenic.json', encoding='utf-8')
@@ -26,7 +32,7 @@ class ScenicApiTest(VenusTestCase):
         
         recieve_data = self.app.get('/api/v1/sec/scenics?location=102.1, 80.1')
         json_data = json.loads(recieve_data.data.decode('utf-8'))
-        assert json_data['body']['totalCount'] > 0
+        assert json_data['body']['total'] > 0
 
 
 class DAApiTest(VenusTestCase):
@@ -40,7 +46,7 @@ class DAApiTest(VenusTestCase):
         
         recieve_data = self.app.get('/api/v1/sec/distractions?location=102.1, 80.1')
         json_data = json.loads(recieve_data.data.decode('utf-8'))
-        assert json_data['body']['totalCount'] > 0
+        assert json_data['body']['total'] > 0
      
 class RecommendFeddApiTest(VenusTestCase):
     def test_add_feed(self):
@@ -74,6 +80,6 @@ class RecommendFeddApiTest(VenusTestCase):
         
         recieve_data = self.app.get('/api/v1/sec/recommend')
         json_data = json.loads(recieve_data.data.decode('utf-8'))
-        assert json_data['body']['totalCount'] > 0
+        assert json_data['body']['total'] > 0
         
         

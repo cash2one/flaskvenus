@@ -11,7 +11,7 @@ from venus.apis import api, APIError, APIValueError
 @api
 def register_user():
     name = request.form['name'].strip()
-    phone = request.form['phoneNo'].strip().lower()
+    phone = request.form['phone'].strip().lower()
     password = request.form['password']
     avatarurl = request.form.get('avatarurl');
     if not name:
@@ -22,7 +22,7 @@ def register_user():
         raise APIValueError('password')
     
     try:
-        user = User.objects.get(phoneNO=phone)
+        user = User.objects.get(phone=phone)
     except DoesNotExist as e:
         user = None
     
@@ -30,7 +30,7 @@ def register_user():
         raise APIError(-1, 'phone', 'phone is already in use.')
     
     uin = idmanager.generateUIN()
-    user = User(uin=uin, name=name, phoneNO=phone, _password=generate_password_hash(password), avatarId = avatarurl)
+    user = User(uin=uin, name=name, phone=phone, _password=generate_password_hash(password), avatar_id = avatarurl)
     user.save()
     return user.to_api(), 201
 

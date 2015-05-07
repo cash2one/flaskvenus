@@ -71,12 +71,6 @@ def get_scenic(feedid):
         raise NotFound()
     
     result=scenic.to_api()
-    result['tag_list'] = []
-    for tagid in scenic.tag_list:
-        tag = Tag.objects.get(id=tagid)
-        if tag: 
-            result['tag_list'].append(tag.to_api())
-    
     result['da_list'] =[]
     for daid in scenic.da_list:
         da = Distraction.objects.get(id=daid)

@@ -15,7 +15,7 @@ def jsonify(*args, **kwargs):
         indent = 2
     return current_app.response_class(json.dumps(dict(*args, **kwargs),
         indent=indent),
-        mimetype='application/json', content_type='application/json; charset=utf8')
+        mimetype='application/json', content_type='application/json; charset=utf-8')
     
 class APIError(Exception):
     '''

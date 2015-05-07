@@ -74,7 +74,7 @@ def authenticate_user_token(nick, token):
 def before_request():
     g.user = None
     if 'uin' in session:
-        g.usr= User.objects.get(uin=uin)
+        g.usr= User.objects.with_id(session['uin'])
     
     
 @app.errorhandler(404)
