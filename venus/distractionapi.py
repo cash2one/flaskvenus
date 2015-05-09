@@ -43,6 +43,11 @@ def append_distance(da, distance):
     da['_id'] = str(da['_id'])
     da['faraway_meters'] = round(distance)
     da['created_by'] = User.objects.with_id(int(da['created_by'])).to_api()
+    if 'topic' in da:
+        da['topic'] = Topic.objcets.with_id(da['topic']).name
+    
+    if'tag_list' in da:
+        da['tag_list'] = [Tag.objects.with_id(tag_id).name for tag_id in da['tag_list']]
     img_url_list = da.get('img_url_list')
     if img_url_list :
         da['imgurl'] = img_url_list[0]
@@ -86,10 +91,4 @@ def get_distraction(feedid):
         raise NotFound
     
     result = distraction.to_api()
-    result['tag_list'] = []
-    for tagid in distraction.tag_list:
-        tag = Tag.objects.with_id(tagid)
-        if tag: 
-            result['tag_list'].append(tag.to_api())
-    
     return result, 0   

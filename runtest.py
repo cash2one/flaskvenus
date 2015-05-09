@@ -19,7 +19,7 @@ if __name__ == '__main__':
     dbcreate.init_distraction_feed()
     #suite = unittest.TestSuite()  
     #suite.addTest(apitest.TagApiTest('test_list_all_feedgroup'))  
-    suite =  unittest.TestLoader().loadTestsFromTestCase(apitest.TagTimelineApiTest)  
+    suite =  unittest.TestLoader().loadTestsFromTestCase(apitest.HotspotResApiTest)  
     unittest.TextTestRunner(verbosity=2).run(suite) 
     #unittest.main(module='venus.test')
     #test_list_all_feedgroup()

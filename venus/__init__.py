@@ -36,7 +36,8 @@ from . import imageapi
 from . import scenicapi
 from . import recommendfeedapi
 from .resource import FeedTag
-from .resource import TagTimeline
+from .resource import FocusTimeline
+from .resource import Hotspot
 
 
 

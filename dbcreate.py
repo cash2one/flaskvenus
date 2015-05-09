@@ -1,7 +1,7 @@
 from werkzeug.security import generate_password_hash
 from venus import app,  db
 import os,json
-from venus.models import IDCounter, User, Tag, Scenic, RecommendFeed, Distraction
+from venus.models import IDCounter, User, Tag, Topic, Scenic, RecommendFeed, Distraction, HotFocus
 
     
 
@@ -65,18 +65,37 @@ def init_tag():
     tag.save()
     tag = Tag(name='累觉不爱', created_by=101, scope='pu', subject = 'distraction')
     tag.save()
-
+    
+def init_topic():
+    topic = Topic(name='#美女最多的酒吧#', created_by=101, subject = 'scenic')
+    topic.save()  
+    topic = Topic(name='#最豪华的水疗会所#', created_by=101,  subject = 'scenic')
+    topic.save()
+    topic = Topic(name='#风景这边独好#', created_by=101, subject = 'scenic')
+    topic.save()
+        
+def init_hotspot():
+    scenic_tags = Tag.objects(subject='scenic', scope='pu')
+    for tag in scenic_tags:
+        focus=HotFocus(focus=tag)
+        focus.save()
+        
+    scenic_topic = Topic.objects(subject='scenic')
+    for topic in scenic_topic:
+        focus=HotFocus(focus=topic)
+        focus.save()
+        
 def init_scenic_feed():
     scenic_data_base = 'venus/static/data/scenic'
     scenic_list = os.listdir(path=scenic_data_base)
+    topic = Topic.objects.get(name='#风景这边独好#')
     for name in scenic_list:
         file = open(os.path.join(scenic_data_base, name), encoding='utf-8')
         scenic = Scenic.from_json(file.read())
         file.close()
+        scenic.topic = topic
         scenic.tag_list=[tag for tag in Tag.objects(scope='pu', subject='scenic')]
         scenic.save()
-        recommend = RecommendFeed(feedid=str(scenic.id), subject='scenic')
-        recommend.save()
         
 def init_distraction_feed():
     da_data_base = 'venus/static/data/distraction'
@@ -87,16 +106,29 @@ def init_distraction_feed():
         file.close()
         distraction.tag_list=[tag for tag in Tag.objects(scope='pu', subject='distraction')]
         distraction.save()
+
+ 
+def init_recommend_feed():
+    scenics = Scenic.objects() 
+    for scenic in scenics:
+        recommend = RecommendFeed(feedid=str(scenic.id), subject='scenic')
+        recommend.save() 
+    
+    distractions = Distraction.objects() 
+    for distraction in distractions:
         recommend = RecommendFeed(feedid=str(distraction.id), subject='distraction')
         recommend.save()
-    
+        
 def create_all():
     version = IDCounter(key='db_version', value=1)
     version.save()
     init_user()
     init_tag()
+    init_topic()
+    init_hotspot()
     init_scenic_feed()
     init_distraction_feed()
+    init_recommend_feed()
 
 if __name__ == "__main__":
     app.config.from_pyfile('settings_dev.py')

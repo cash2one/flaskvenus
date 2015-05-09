@@ -1,7 +1,7 @@
 import datetime
 from mongoengine import (Document, DynamicDocument, EmbeddedDocument,LongField, SequenceField, DictField,
-                        BooleanField, IntField, StringField, ListField, ReferenceField, EmbeddedDocumentField, 
-                        DateTimeField, GeoPointField , connect)
+                        BooleanField, IntField, StringField, ListField, ReferenceField,GenericReferenceField, 
+                        EmbeddedDocumentField, DateTimeField, GeoPointField , connect)
 from mongoengine.fields import FloatField
 from bson import json_util
 from . import db as mongodb
@@ -73,22 +73,22 @@ def Relation(type1, type2):
     return RelationCls
 
 
-class Followable(object):
+class Focus(object):
     name  = StringField(max_length=50, unique=True, required=True) 
     created_by = ReferenceField(User,  required=True)
     create_time = DateTimeField(default=datetime.datetime.now)
     follower_num = IntField()
+    subject =  StringField(default = 'scenic', max_length=20, choices =('album', 'scenic','distraction', 'user')) 
     
     def follow(self):
         pass
 
 #当 Tag.scope为public时,即变成type
-class Tag(Followable, ApiDocument):
+class Tag(Focus, ApiDocument):
     #_id = StringField(unique=True,required=True)
     parent = ReferenceField('self', required=False, default=None, reverse_delete_rule=mongodb.DENY)
     #offical指经公司编辑认同后由public提升而来的
     scope = StringField(default = 'pu', max_length=2) #"choices (offical, public,private, friend)
-    subject =  StringField(default = 'scenic', max_length=20) #choices ('album', 'scenic','distraction', 'user')
     feed_num = IntField()
     
     def get_children(self, **kwargs):
@@ -96,11 +96,15 @@ class Tag(Followable, ApiDocument):
         return self.__class__.objects(parent=self, **kwargs)
     
     meta = {'collection': 'tag'}
-            
+
+class Topic(Focus, ApiDocument):
+    #_id = StringField(unique=True,required=True)
+    feed_num = IntField()     
+                
 class Feedable(object):
     title = StringField(max_length=20)
     summary = StringField(max_length=50)
-    topic_id = StringField(max_length=50)
+    topic = ReferenceField(Topic)
     tag_list = ListField(ReferenceField(Tag))
     imgurl  = StringField(max_length=256)
     like_num = IntField()
@@ -111,12 +115,14 @@ class Feedable(object):
         if isinstance(self, ApiDocument):
             values = ApiDocument.to_api(self, hide_id)
             values['created_by'] = self.created_by.to_api()
+            if self.topic:
+                values['topic'] = self.topic.name
             values['tag_list'] = [tag.name for tag in self.tag_list]
             return values
         
         return self.__dict__    
     
-class Followship(Relation(User, Followable)):
+class Followship(Relation(User, Focus)):
     target_type = StringField(required=True)
 
 class Notification(ApiDocument):
@@ -179,12 +185,13 @@ class SDRelation(Document):
     da_id = StringField(required=True)
     type = IntField()
 
-    
 
-class Topic(Followable, ApiDocument):
-    #_id = StringField(unique=True,required=True)
-    feed_num = IntField()     
-                       
+class HotFocus(ApiDocument):
+    focus = GenericReferenceField()  
+    create_time = DateTimeField(default=datetime.datetime.now)
+    _ttl_day =IntField(db_field = 'ttl_day', default=5)
+    
+                         
 class DAType(Document):
     _typeId = IntField(db_field='typeId',unique=True, required=True)
     _typeName = StringField(db_field='typeName', max_length=50, unique=True, required=True)

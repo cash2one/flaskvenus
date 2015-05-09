@@ -19,7 +19,12 @@ class TagTimelineApiTest(VenusTestCase):
         recieve_data = self.app.get('/api/v1/scenic/timeline/tag/情侣约会')
         json_data = json.loads(recieve_data.data.decode('utf-8'))
         assert json_data['body']['total'] > 0
-    
+
+class HotspotResApiTest(VenusTestCase):
+    def test_get_hotspot(self):
+        recieve_data = self.app.get('/api/v1/hotspot') 
+        json_data = json.loads(recieve_data.data.decode('utf-8'))
+        assert len(json_data['body']['topics']) > 0   
                 
 class ScenicApiTest(VenusTestCase):
     def test_add_scenic(self):
