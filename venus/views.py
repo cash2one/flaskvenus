@@ -42,7 +42,7 @@ def logout():
 
     
 
-@app.route('/api/v1/rest/login', methods=['POST'])
+@app.route('/api/v1/login', methods=['POST'])
 @api
 def authenticate():
     name = request.form['uid'].strip().lower()

@@ -7,7 +7,7 @@ from venus.models import User
 from venus import app, db, idmanager,utils, settings
 from venus.apis import api, APIError, APIValueError
 
-@app.route('/api/v1/rest/users',  methods=['POST'])
+@app.route('/api/v1/users',  methods=['POST'])
 @api
 def register_user():
     name = request.form['name'].strip()
@@ -43,7 +43,7 @@ def get_current_user(request):
         
     
 def is_admin(uin):
-    user = User.objects.get(uin=uin)
+    user = User.objects.with_id(uin)
     if user and user.is_admin():
         return True
     return False
@@ -52,7 +52,7 @@ def ensure_admin(request):
     uin = request.cookies.get('uin')
     return is_admin(uin)
 
-@app.route('/api/v1/rest/users',  methods=['GET'])
+@app.route('/api/v1/users',  methods=['GET'])
 @api
 def list_users():
     form = request.args
@@ -64,7 +64,7 @@ def list_users():
     page = utils.paginate_list(list, from_index, per_num)
     return page, 0
 
-@app.route('/api/v1/rest/users/<int:uin>',  methods=['GET'])
+@app.route('/api/v1/users/<int:uin>',  methods=['GET'])
 @api
 def get_user(uin):
     ensure_admin(request)

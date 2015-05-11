@@ -36,7 +36,7 @@ class User(ApiDocument):
     _password = StringField(db_field='password', max_length=200)
     role = IntField(choices=(MEMBER, MODERATOR, ADMIN), default=MEMBER)
     avatar_id = StringField(max_length=256)
-    sex_type = IntField(default=1)
+    sex = IntField(default=1)
     meta = {'abstract': False, 'indexes': ['uin']}
     
     def to_api(self, hide_id = True):
