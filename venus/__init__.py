@@ -22,7 +22,7 @@ DEFAULT_APP_NAME = 'venus'
 db = MongoEngine()
 restapi=MyRestApi()
 
-def create_app(config_name):
+def create_app(config_name=None):
     from .views import web
     from .apiv1 import apiv1
     
