@@ -1,5 +1,5 @@
 # -*- coding:utf-8 -*-
-from .models import Poi
+from venus.models import Poi
 import hashlib, httplib2, json
 from urllib.parse import urlencode,quote_plus
 

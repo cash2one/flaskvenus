@@ -20,13 +20,28 @@ class MyRestApi(Api):
 DEFAULT_APP_NAME = 'venus'
 
 db = MongoEngine()
-app = Flask(DEFAULT_APP_NAME)
-csrf_protect = CsrfProtect(app)
-restapi=MyRestApi(app, decorators=[csrf_protect.exempt])
-app.config.from_object('venus.settings')
+restapi=MyRestApi()
+
+def create_app(config_name):
+    from .views import web
+    from .apiv1 import apiv1
+    
+    app = Flask(DEFAULT_APP_NAME)
+    app.register_blueprint(web)
+    app.register_blueprint(apiv1, url_prefix='/api/v1')
+    app.config.from_object('venus.settings')
+    if config_name:
+        app.config.from_pyfile(config_name)
+        
+    csrf_protect = CsrfProtect(app)    
+    restapi.init_app(app)
+    restapi.decorators=[csrf_protect.exempt]
+    
+    db.init_app(app)
+    return app
+    
 
 
-from . import views
 from . import userapi
 from . import distractiontypeapi
 from . import distractionapi
@@ -38,7 +53,3 @@ from . import recommendfeedapi
 from .resource import FeedTag
 from .resource import FocusTimeline
 from .resource import Hotspot
-
-
-
-    

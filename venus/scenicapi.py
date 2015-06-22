@@ -2,13 +2,14 @@ import time, datetime,json
 from flask import request
 from werkzeug.exceptions import NotFound
 from .models import Poi, Scenic, RecommendFeed, Tag, Distraction
-from . import app, db, locationresolver,utils, userapi
+from . import db, locationresolver,utils, userapi
 from .apis import api, APIError, APIValueError
+from .apiv1 import apiv1
 from bson.son import SON
 
 EARTH_RADIUS_METERS = 6378137;
 
-@app.route('/api/v1/sec/scenics',  methods=['POST'])
+@apiv1.route('/sec/scenics',  methods=['POST'])
 @api
 def add_scenic():
     form = request.form
@@ -17,7 +18,7 @@ def add_scenic():
     scenic.summary = form.get('summary', None)
     scenic.description = form.get('description', None)
     scenic.create_by = User.objects.get(uin= int(form['createuser']))
-    url_str = form.get('imgurllist', None)
+    url_str = form.get('img_ur_llist', None)
     if url_str:
         urllist = url_str.split(',')
         scenic.main_imgurl = urllist[0]
@@ -40,7 +41,7 @@ def append_distance(scenic, distance):
     scenic['faraway_meters'] = round(distance)
     return scenic 
             
-@app.route('/api/v1/sec/scenics',  methods=['get'])
+@apiv1.route('/sec/scenics',  methods=['get'])
 @api
 def get_nearby_scenics():
     args = request.args
@@ -63,7 +64,7 @@ def get_nearby_scenics():
     page = utils.paginate_list(scenics, from_index, per_num)
     return page, 0
     
-@app.route('/api/v1/sec/scenics/<feedid>',  methods=['get'])
+@apiv1.route('/sec/scenics/<feedid>',  methods=['get'])
 @api
 def get_scenic(feedid):
     scenic = Scenic.objects.with_id(feedid)

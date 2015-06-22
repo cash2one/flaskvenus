@@ -3,12 +3,13 @@
 from flask import request
 from mongoengine.errors import DoesNotExist
 from .models import IDCounter, Tag
-from . import app, db, idmanager,utils
+from . import db, idmanager,utils
 from .apis import api, APIError, APIValueError
+from .apiv1 import apiv1
 from bson import ObjectId
 
 
-@app.route('/api/v1/sec/datags',  methods=['POST'])
+@apiv1.route('/sec/datags',  methods=['POST'])
 @api
 def add_datag():
     form = request.form
@@ -21,7 +22,7 @@ def add_datag():
     tag.save()
     return tag.to_api(hide_id=False),0
     
-@app.route('/api/v1/sec/datags',  methods=['GET'])
+@apiv1.route('/sec/datags',  methods=['GET'])
 @api
 def list_all_datag():
     try:

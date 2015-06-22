@@ -17,7 +17,7 @@ function validateEmail(email) {
 
 {% block body %}
       <h1>欢迎注册！</h1>
-      <form action="{{ url_for('register_user') }}" method=post >
+      <form action="{{ url_for('apiv1.register_user') }}" method=post >
       	  <p><label>昵称： <input type="text" name="name"/></label></p>
       	  <p><label>头像： <input type="text" name="avatarurl" value="" /></label></p>
           <p><label>手机号： <input type="text" name="phoneNo"/></label></p>
@@ -28,7 +28,7 @@ function validateEmail(email) {
       <br />
       <br />
       
-	<form action="{{ url_for('set_avatar', uin=102) }}" method=post >
+	<form action="{{ url_for('apiv1.set_avatar', uin=102) }}" method=post >
 	  	<p><label>账号： <input type="number" name="uin"/></label></p>
 	  	<p><label>头像： <input type="text" name="avatarurl" value="" /></label></p>
 		<p><input type="submit" value=" 设置 " name="submit" style="margin-left:60px;" /></p>
@@ -36,7 +36,7 @@ function validateEmail(email) {
 	<br />
 	<br />
 
-      <form action= "{{ url_for('upload_image') }}" method=post enctype="multipart/form-data">
+      <form action= "{{ url_for('apiv1.upload_image') }}" method=post enctype="multipart/form-data">
       	<p><input type="file" multiple="" name="image" /></p>
         <p><input type="submit" value="上传图片"  style="margin-left:60px;"></p>
       </form>
@@ -47,7 +47,7 @@ function validateEmail(email) {
             上传的图片:
     <ul>
       {% for file in filenames %}
-        <li><a href="{{url_for('get_image', imageid=file)}}">{{file}}</a></li>
+        <li><a href="{{url_for('apiv1.get_image', imageid=file)}}">{{file}}</a></li>
       {% endfor %}
     </ul>
     </div>

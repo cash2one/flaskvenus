@@ -4,10 +4,11 @@ from flask import request
 from werkzeug.security import generate_password_hash,check_password_hash
 from mongoengine.errors import DoesNotExist
 from venus.models import User
-from venus import app, db, idmanager,utils, settings
-from venus.apis import api, APIError, APIValueError
+from . import db, idmanager,utils, settings
+from .apis import api, APIError, APIValueError
+from .apiv1 import apiv1
 
-@app.route('/api/v1/users',  methods=['POST'])
+@apiv1.route('/users',  methods=['POST'])
 @api
 def register_user():
     name = request.form['name'].strip()
@@ -52,7 +53,7 @@ def ensure_admin(request):
     uin = request.cookies.get('uin')
     return is_admin(uin)
 
-@app.route('/api/v1/users',  methods=['GET'])
+@apiv1.route('/users',  methods=['GET'])
 @api
 def list_users():
     form = request.args
@@ -64,7 +65,7 @@ def list_users():
     page = utils.paginate_list(list, from_index, per_num)
     return page, 0
 
-@app.route('/api/v1/users/<int:uin>',  methods=['GET'])
+@apiv1.route('/users/<int:uin>',  methods=['GET'])
 @api
 def get_user(uin):
     ensure_admin(request)
@@ -74,14 +75,14 @@ def get_user(uin):
     return 'not found', 404
     
 
-@app.route('/api/v1/rest/users/<int:uin>',  methods=['DELETE'])
+@apiv1.route('/users/<int:uin>',  methods=['DELETE'])
 @api
 def delete_user(uin):
     ensure_admin(request)
     User.objects.delete(uin=uin)
     return {}, 0
 
-@app.route('/api/v1/rest/users/<uin>/avatar',  methods=['POST'])
+@apiv1.route('/users/<uin>/avatar',  methods=['POST'])
 @api
 def set_avatar(uin):
     uin = request.form['uin']

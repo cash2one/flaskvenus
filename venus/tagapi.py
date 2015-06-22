@@ -4,15 +4,16 @@ from flask import request, abort
 from mongoengine.errors import DoesNotExist
 from flask_mongoengine.wtf import model_form
 from .models import IDCounter, Tag
-from . import app, db, idmanager,utils, userapi
+from . import db, idmanager,utils, userapi
 from .apis import api, APIError, APIValueError
+from .apiv1 import apiv1
 from bson import ObjectId
 from flask.helpers import url_for
 
 ALLOW_TAG_SUBJECT =  set(['album', 'scenic', 'distraction', 'user'])
         
         
-@app.route('/api/v1/sec/tags/<subject>',  methods=['POST'])                          
+@apiv1.route('/sec/tags/<subject>',  methods=['POST'])                          
 @api
 def add_tag(subject):
     if subject not in ALLOW_TAG_SUBJECT:
@@ -33,7 +34,7 @@ def add_tag(subject):
     tag.save()
     return tag.to_api(hide_id=False),0
     
-@app.route('/api/v1/sec/tags/<subject>',  methods=['GET'])
+@apiv1.route('/sec/tags/<subject>',  methods=['GET'])
 @api
 def list_all_tag(subject):
     if subject not in ALLOW_TAG_SUBJECT:
@@ -48,18 +49,18 @@ def list_all_tag(subject):
     return {'total':len(tags), 'list': tags}, 0
  
  
-@app.route('/api/v1/feedgroup',  methods=['GET'])
+@apiv1.route('/feedgroup',  methods=['GET'])
 @api
 def list_all_feedgroup():
-    scenic_group = dict(name='推荐地点', moreurl=url_for('add_tag', subject='scenic'))     
+    scenic_group = dict(name='推荐地点', moreurl=url_for('apiv1.add_tag', subject='scenic'))     
     tags = Tag.objects(scope='of', subject = 'scenic')
     scenic_group['value'] = [tag.to_api(False) for tag in tags]
     
-    da_group = dict(name='活动', moreurl=url_for('add_tag', subject='distraction')) 
+    da_group = dict(name='活动', moreurl=url_for('apiv1.add_tag', subject='distraction')) 
     tags = Tag.objects(scope='of', subject = 'distraction')
     da_group['value'] = [tag.to_api(False) for tag in tags]
     
-    topic_group = dict(name='专题', moreurl=url_for('add_tag', subject='album'))
+    topic_group = dict(name='专题', moreurl=url_for('apiv1.add_tag', subject='album'))
     tags = Tag.objects(scope='of',  subject = 'album')
     topic_group['value'] = [tag.to_api(False) for tag in tags]
     

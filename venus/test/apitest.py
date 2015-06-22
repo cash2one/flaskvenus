@@ -1,4 +1,4 @@
-import json
+import json, unittest
 from .venustest import VenusTestCase
 from venus import utils
 
@@ -86,5 +86,11 @@ class RecommendFeddApiTest(VenusTestCase):
         recieve_data = self.app.get('/api/v1/sec/recommend')
         json_data = json.loads(recieve_data.data.decode('utf-8'))
         assert json_data['body']['total'] > 0
+        
+def suite():
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(TagApiTest))
+    suite.addTest(unittest.makeSuite(TagTimelineApiTest))
+    return suite
         
         

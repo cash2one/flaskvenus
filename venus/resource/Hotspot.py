@@ -6,7 +6,7 @@ from flask.ext.restful import Resource
 from mongoengine.errors import DoesNotExist, InvalidQueryError
 
 from venus.models import Tag, Topic, HotFocus
-from venus import app, restapi, utils
+from venus import  restapi, utils
 from venus.resource.ApiResource import ApiResource
 
 

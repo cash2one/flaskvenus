@@ -2,7 +2,12 @@ from threading import Lock
 from werkzeug.wsgi import pop_path_info, peek_path_info
 from werkzeug.wsgi import DispatcherMiddleware
 from werkzeug.serving import run_simple
-from venus import app, db
+import logging
+from logging.handlers import RotatingFileHandler
+from venus import create_app
+from venus import db as venusdb
+from cms import app as cmsapp
+from cms import dbs as cmsdb
 
 class SubdomainDispatcher(object):
 
@@ -54,20 +59,27 @@ class PathDispatcher(object):
 
 def make_app(prefix):
     if prefix == 'venus':
-        return app
-    elif prefix == 'venuscms':
-        return app  #cms_app还不存在,暂时用app来替代
+        return venusapp
+    elif prefix == 'cms':
+        return cmsapp  #cms_app还不存在,暂时用app来替代
     return None
 
-
-if __name__ == '__main__':
-    app.config.from_pyfile('settings_dev.py')
-    db.init_app(app)
-    #app.run(debug=app.config['DEBUG'], host='0.0.0.0',port=80)
+def init_logger(app, filename):
+        file_handler = RotatingFileHandler(filename, 'a', 1 * 1024 * 1024, 10)
+        file_handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'))
+        app.logger.setLevel(logging.INFO)
+        file_handler.setLevel(logging.INFO)
+        app.logger.addHandler(file_handler)
     
-    application = PathDispatcher(app, make_app)
-    #application = DispatcherMiddleware(app, {'/venus': app, '/venuscms' : app});
-    run_simple('0.0.0.0', 80, application, use_reloader=True, use_debugger=app.config['DEBUG'])
+    
+if __name__ == '__main__':
+    venusapp = create_app('settings_dev.py')
+    #venusapp.run(debug=venusapp.config['DEBUG'], host='0.0.0.0',port=80)
+    
+    application = PathDispatcher(venusapp, make_app)
+    #application = DispatcherMiddleware(app, {'/venus': venusapp, '/cms' : cmsapp});
+    run_simple('0.0.0.0', 80, application, use_reloader=True, use_debugger=venusapp.config['DEBUG'])
 else :
-    db.init_app(app)
-    app = DispatcherMiddleware(app, {'/venus': app, '/venuscms' : app});
+    venusapp = create_app()
+    init_logger(venusapp, '/var/log/venus.log')
+    app = DispatcherMiddleware(venusapp, {'/venus': venusapp, '/cms' : cmsapp})

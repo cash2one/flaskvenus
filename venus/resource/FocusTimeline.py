@@ -2,11 +2,11 @@
 
 from flask import request, abort
 from flask.helpers import url_for
-from flask.ext.restful import Resource, reqparse
+from flask_restful import Resource, reqparse
 from mongoengine.errors import DoesNotExist, InvalidQueryError
 
 from venus.models import Tag, Scenic, Topic
-from venus import app, restapi, utils
+from venus import restapi, utils
 from venus.resource.ApiResource import ApiResource
 
 class TagScenicTimelineRes(ApiResource):

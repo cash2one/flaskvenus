@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from flask import request, abort
-from flask.ext.restful import Resource
+from flask_restful import Resource
 from venus import restapi
 from venus.apis import jsonify
 
@@ -13,6 +13,7 @@ def output_json(data, code, headers=None):
         
     return resp
 
+    
 class ApiResource(Resource):
     def dispatch_request(self, *args, **kwargs):
         data = super(ApiResource, self).dispatch_request(*args, **kwargs)

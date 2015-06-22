@@ -2,11 +2,12 @@ import time, datetime,json
 from flask import request
 from mongoengine.errors import DoesNotExist
 from .models import Distraction, User, RecommendFeed, Scenic, Distraction, Album
-from . import app, db,utils
+from . import db,utils
 from .apis import api, APIError, APIValueError
+from .apiv1 import apiv1
 
 
-@app.route('/api/v1/sec/recommend',  methods=['POST'])
+@apiv1.route('/sec/recommend',  methods=['POST'])
 @api
 def add_recommend_feed():
     form = request.form
@@ -30,7 +31,7 @@ class Feed(object):
     def to_api(self):
         return self.__dict__
             
-@app.route('/api/v1/sec/recommend',  methods=['get'])
+@apiv1.route('/sec/recommend',  methods=['get'])
 @api
 def get_all_recommend_feed():
     args = request.args

@@ -12,13 +12,13 @@
 {% endfor %}
 
 <nav >
-    <a href="{{ url_for('index') }}">Home</a> |
+    <a href="{{ url_for('web.index') }}">Home</a> |
     {% if logged_in %}
         {{ username }} login <a href="{{ url_for('logout') }}">logout</a>
     {% else %}
     <p>
-    	<a href="{{ url_for('login') }}">登录</a>
-    	<a href="{{ url_for('register') }}">注册</a>
+    	<a href="{{ url_for('web.login') }}">登录</a>
+    	<a href="{{ url_for('web.register') }}">注册</a>
     </p>
     {% endif %}
 </nav>

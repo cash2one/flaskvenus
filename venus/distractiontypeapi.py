@@ -2,11 +2,11 @@
 
 from flask import request
 from .models import IDCounter, DAType
-from . import app, db, idmanager,utils
+from . import  db, idmanager,utils
 from .apis import api, APIError, APIValueError
+from .apiv1 import apiv1
 
-
-@app.route('/api/v1/sec/datypes',  methods=['POST'])
+@apiv1.route('/sec/datypes',  methods=['POST'])
 @api
 def add_type():
     main_type = request.form.get('maintypeid', '0')
@@ -19,7 +19,7 @@ def add_type():
     datype.save()
     return datype.to_api(),0
     
-@app.route('/api/v1/sec/datypes',  methods=['GET'])
+@apiv1.route('/sec/datypes',  methods=['GET'])
 @api
 def list_all_type():
     list = DAType.objects.all()

@@ -7,7 +7,7 @@
   {% if login %}
   <p class=login><strong>login:</strong> {{ username }}</p>
   {% else %}
-  <p><span /> <a href="{{ url_for('login') }}">login</a></p>
+  <p><span /> <a href="{{ url_for('web.login') }}">login</a></p>
   {% endif %}
   
 </div>

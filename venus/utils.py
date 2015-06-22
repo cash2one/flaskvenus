@@ -6,7 +6,7 @@ import string
 import random
 import hashlib, time
 from flask_mongoengine import Pagination
-from .models import ApiDocument, User
+from venus.models import ApiDocument, User
 
 def random_key():
     return ''.join([random.choice(string.letters) for i in xrange(48)])
@@ -41,3 +41,4 @@ def timestamp_ms(time_str=None):
     else:
         time_second = time.time()
     return round(time_second*1000)
+

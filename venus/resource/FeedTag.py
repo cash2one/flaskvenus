@@ -2,12 +2,12 @@
 
 from flask import request, abort
 from flask.helpers import url_for
-from flask.ext.restful import Resource, reqparse
+from flask_restful import Resource, reqparse
 from flask_mongoengine.wtf.orm import model_form, ModelConverter, converts
 from mongoengine.errors import DoesNotExist, InvalidQueryError
 
 from venus.models import Tag, User
-from venus import app, restapi
+from venus import restapi
 from venus.resource.ApiResource import ApiResource
 
 ALLOW_TAG_SUBJECT =  set(['album', 'scenic', 'distraction', 'user'])
@@ -84,8 +84,6 @@ class FeedTagRes(Resource):
             
         return tag
     
-restapi.add_resource(FeedTagListRes, '/api/v1/feedtags' , endpoint='tags')
-restapi.add_resource(FeedTagRes, '/api/v1/feedtags/<tagid>', endpoint='tag')
 
  
     

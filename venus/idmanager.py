@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import logging
-from . import db
-from .models import IDCounter
+from venus.models import IDCounter
 
 
 def generateUIN() -> int:

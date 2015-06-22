@@ -3,28 +3,29 @@ import json
 from flask import Flask, redirect, url_for, session, request, jsonify, Markup
 from flask_oauthlib.client import OAuth
 from .models import User
-from . import app, db
+from . import  db
+from .apiv1 import apiv1
 
 
-def configure(app):
-    qq = oauth.remote_app(
+def configure(apiv1):
+    qq = oauth.remote_apiv1(
         'qq',
-        consumer_key=app.config['QQ_APP_ID'],
-        consumer_secret=app.config['QQ_APP_KEY'],
+        consumer_key=apiv1.config['QQ_APP_ID'],
+        consumer_secret=apiv1.config['QQ_APP_KEY'],
         base_url='https://graph.qq.com',
         request_token_url=None,
         request_token_params={'scope': 'get_user_info'},
         access_token_url='/oauth2.0/token',
         authorize_url='/oauth2.0/authorize',
         )
-    setattr(app, 'oauth_qq', qq)
+    setattr(apiv1, 'oauth_qq', qq)
     
-def get_oauth_app(provider):
+def get_oauth_apiv1(provider):
     provider_name = "oauth_" + provider
-    return getattr(current_app, provider_name, None)
+    return getattr(current_apiv1, provider_name, None)
 
-#qq=functools.partial(get_oauth_app, 'qq')
-qq=lambda:get_oauth_app('qq')
+#qq=functools.partial(get_oauth_apiv1, 'qq')
+qq=lambda:get_oauth_apiv1('qq')
 
 def json_to_dict(x):
     '''OAuthResponse class can't not parse the JSON data with content-type
@@ -50,14 +51,14 @@ def update_qq_api_request_data(data={}):
     return defaults
 
 
-@app.route('/')
+@apiv1.route('/')
 def index():
     '''just for verify website owner here.'''
     return Markup('''<meta property="qc:admins" '''
                   '''content="226526754150631611006375" />''')
 
 
-@app.route('/user_info')
+@apiv1.route('/user_info')
 def get_user_info():
     if 'qq_token' in session:
         data = update_qq_api_request_data()
@@ -66,18 +67,18 @@ def get_user_info():
     return redirect(url_for('login'))
 
 
-@app.route('/login')
+@apiv1.route('/login')
 def login():
     return qq.authorize(callback=url_for('authorized', _external=True))
 
 
-@app.route('/logout')
+@apiv1.route('/logout')
 def logout():
     session.pop('qq_token', None)
     return redirect(url_for('get_user_info'))
 
 
-@app.route('/login/authorized')
+@apiv1.route('/login/authorized')
 def authorized():
     resp = qq.authorized_response()
     if resp is None:

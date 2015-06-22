@@ -1,15 +1,17 @@
 import time, datetime,json
 from flask import request
-from .models import Distraction, Poi, User, RecommendFeed, Tag
-from . import app, db, locationresolver,utils, userapi
-from .apis import api, APIError, APIValueError
 from bson.son import SON
-from django.contrib.gis.measure import Distance
 from werkzeug.exceptions import NotFound
+
+from .models import Distraction, User, RecommendFeed, Tag, Topic
+from . import apiv1, locationresolver,utils, userapi
+from .apis import api, APIError
+from .apiv1 import apiv1
+
 
 EARTH_RADIUS_METERS = 6378137;
 
-@app.route('/api/v1/sec/distractions',  methods=['POST'])
+@apiv1.route('/sec/distractions',  methods=['POST'])
 @api
 def add_distraction():
     form = request.form
@@ -17,16 +19,18 @@ def add_distraction():
     da.title = form.get('title', None)
     da.description = form.get('description', None)
     da.pay_type = int(form.get('paytype', '0'))
-    da.create_user_id = int(form['createuser'])
-    da.start_time = utils.timestamp_ms(form['starttime'])
-    da.create_time = int(utils.timestamp_ms())
+    da.created_by = User.objects.get(uin= int(form['createuser']))
+    ts_ms = form.get('starttime', None)
+    if ts_ms: 
+        da.start_time = datetime.datetime.fromtimestamp(int(ts_ms)/1000)
     url_list = form.get('img_url_list', None);
     if url_list :
         da.img_url_list = url_list.split(',')
         
-    tag_list_str = form.get('tag_id_list', None)
+    tag_list_str = form.get('tag_list', None)
     if tag_list_str :
-        da.tag_list = tag_list_str.split(',')
+        tag_list = tag_list_str.split(',')
+        da.tag_list = [Tag.objects.with_id(tag_id) for tag_id in tag_list]
         
     address = form['address'];
     longitude, lantitude = form['location'].split(',')
@@ -42,7 +46,7 @@ def add_distraction():
 def append_distance(da, distance):
     da['_id'] = str(da['_id'])
     da['faraway_meters'] = round(distance)
-    da['created_by'] = User.objects.with_id(int(da['created_by'])).to_api()
+    da['created_by'] = User.objects.with_id(int(da['created_by'])).to_api()  
     if 'topic' in da:
         da['topic'] = Topic.objcets.with_id(da['topic']).name
     
@@ -55,7 +59,7 @@ def append_distance(da, distance):
     return da
 
             
-@app.route('/api/v1/sec/distractions',  methods=['get'])
+@apiv1.route('/sec/distractions',  methods=['get'])
 @api
 def get_nearby_distraction():
     args = request.args
@@ -83,7 +87,7 @@ def get_nearby_distraction():
     page = utils.paginate_list(dalist, from_index, per_num)
     return page, 0
  
-@app.route('/api/v1/sec/distractions/<feedid>',  methods=['get'])
+@apiv1.route('/sec/distractions/<feedid>',  methods=['get'])
 @api
 def get_distraction(feedid):   
     distraction = Distraction.objects.with_id(feedid)

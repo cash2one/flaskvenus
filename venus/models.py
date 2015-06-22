@@ -3,10 +3,8 @@ from mongoengine import (Document, DynamicDocument, EmbeddedDocument,LongField, 
                         BooleanField, IntField, StringField, ListField, ReferenceField,GenericReferenceField, 
                         EmbeddedDocumentField, DateTimeField, GeoPointField , connect)
 from mongoengine.fields import FloatField
-from bson import json_util
-from . import db as mongodb
+from venus import db as mongodb
 from random import choice
-from pip._vendor.pkg_resources import require
 
         
 class ApiDocument(Document):
@@ -86,7 +84,7 @@ class Focus(object):
 #当 Tag.scope为public时,即变成type
 class Tag(Focus, ApiDocument):
     #_id = StringField(unique=True,required=True)
-    parent = ReferenceField('self', required=False, default=None, reverse_delete_rule=mongodb.DENY)
+    parent = ReferenceField('self', required=False, default=None, reverse_delete_rule= mongodb.DENY)
     #offical指经公司编辑认同后由public提升而来的
     scope = StringField(default = 'pu', max_length=2) #"choices (offical, public,private, friend)
     feed_num = IntField()
@@ -263,7 +261,7 @@ class Scenic(Feedable, ApiDocument):
     
     @property
     def creater(self):
-        return User.objects.get(uin=create_user_id).to_api()
+        return self.created_by.to_api()
     
     
         

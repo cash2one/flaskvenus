@@ -1,5 +1,5 @@
 from werkzeug.security import generate_password_hash
-from venus import app,  db
+from venus import db, create_app
 import os,json
 from venus.models import IDCounter, User, Tag, Topic, Scenic, RecommendFeed, Distraction, HotFocus
 
@@ -55,15 +55,15 @@ def init_tag():
     tag = Tag(name='优惠券', created_by=101, scope='of', subject = 'distraction')
     tag.save()
     
-    tag = Tag(name='徒步穿越', created_by=101, scope='pu', subject = 'distraction')
+    tag = Tag(name='徒步/穿越', created_by=101, scope='pu', subject = 'distraction')
     tag.save() 
     tag = Tag(name='爬山', created_by=101, scope='pu', subject = 'distraction')
     tag.save() 
     tag = Tag(name='钓鱼', created_by=101, scope='pu', subject = 'distraction')
     tag.save()  
-    tag = Tag(name='暖男', created_by=101, scope='pu', subject = 'distraction')
+    tag = Tag(name='采摘', created_by=101, scope='pu', subject = 'distraction')
     tag.save()
-    tag = Tag(name='累觉不爱', created_by=101, scope='pu', subject = 'distraction')
+    tag = Tag(name='农家乐', created_by=101, scope='pu', subject = 'distraction')
     tag.save()
     
 def init_topic():
@@ -131,6 +131,6 @@ def create_all():
     init_recommend_feed()
 
 if __name__ == "__main__":
-    app.config.from_pyfile('settings_dev.py')
+    app = create_app('settings_dev.py')
     db.init_app(app)
     create_all()
